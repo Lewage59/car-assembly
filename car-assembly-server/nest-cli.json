@@ -1,5 +1,40 @@
 {
     "language": "ts",
     "collection": "@nestjs/schematics",
-    "sourceRoot": "src"
+    "sourceRoot": "apps/car-assembly-server/src",
+    "monorepo": true,
+    "root": "apps/car-assembly-server",
+    "compilerOptions": {
+        "webpack": true,
+        "tsConfigPath": "apps/car-assembly-server/tsconfig.app.json"
+    },
+    "projects": {
+        "car-assembly-server": {
+            "type": "application",
+            "root": "apps/car-assembly-server",
+            "entryFile": "main",
+            "sourceRoot": "apps/car-assembly-server/src",
+            "compilerOptions": {
+                "tsConfigPath": "apps/car-assembly-server/tsconfig.app.json"
+            }
+        },
+        "admin": {
+            "type": "application",
+            "root": "apps/admin",
+            "entryFile": "main",
+            "sourceRoot": "apps/admin/src",
+            "compilerOptions": {
+                "tsConfigPath": "apps/admin/tsconfig.app.json"
+            }
+        },
+        "db": {
+            "type": "library",
+            "root": "libs/db",
+            "entryFile": "index",
+            "sourceRoot": "libs/db/src",
+            "compilerOptions": {
+                "tsConfigPath": "libs/db/tsconfig.lib.json"
+            }
+        }
+    }
 }
