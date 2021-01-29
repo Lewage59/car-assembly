@@ -77,7 +77,11 @@
     ],
     "moduleNameMapper": {
       "@libs/db/(.*)": "<rootDir>/libs/db/src/$1",
-      "@libs/db": "<rootDir>/libs/db/src"
+      "@libs/db": "<rootDir>/libs/db/src",
+      "@app/auth/(.*)": "<rootDir>/libs/auth/src/$1",
+      "@app/auth": "<rootDir>/libs/auth/src",
+      "@app/logger/(.*)": "<rootDir>/libs/logger/src/$1",
+      "@app/logger": "<rootDir>/libs/logger/src"
     }
   }
 }
