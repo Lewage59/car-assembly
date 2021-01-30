@@ -15,4 +15,9 @@ export class UserService {
         this.logger.log(`student findById: param -> xxx`);
         return this.userRepository.find();
     }
+
+    async findOne(username: string): Promise<User | undefined> {
+        this.logger.log(`student findById: param -> ${username}`);
+        return await this.userRepository.findOne({ where: { username } });
+    }
 }
