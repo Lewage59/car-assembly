@@ -9,15 +9,17 @@ export class UserService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         private readonly logger: LoggerService
-    ) {}
+    ) {
+        this.logger.setContext('UserService');
+    }
 
     findAll() {
-        this.logger.log(`student findById: param -> xxx`);
+        this.logger.log(`findAll: param -> xxx`);
         return this.userRepository.find();
     }
 
     async findOne(username: string): Promise<User | undefined> {
-        this.logger.log(`student findById: param -> ${username}`);
+        this.logger.log(`findOne: username -> ${username}`);
         return await this.userRepository.findOne({ where: { username } });
     }
 }
