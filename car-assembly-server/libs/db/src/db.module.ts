@@ -19,6 +19,7 @@ const entities = TypeOrmModule.forFeature([
             password: '82580',
             database: 'car_assembly',
             entities: [User],
+            charset: "utf8mb4", // 设置chatset编码为utf8mb4
             synchronize: true
         }),
         entities
