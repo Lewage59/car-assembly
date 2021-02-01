@@ -7,13 +7,20 @@ import { jwtConstants } from '../constants';
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        ignoreExpiration: false,
-        secretOrKey: jwtConstants.secret,
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: jwtConstants.secret,
         });
     }
 
     async validate(payload: any) {
-        return { userId: payload.sub, username: payload.username };
+        return {
+            user_id: payload.sub,
+            username: payload.username,
+            email: payload.email,
+            tel: payload.tel,
+            create_time: payload.create_time,
+            role: payload.role,
+        };
     }
 }
