@@ -1,10 +1,21 @@
+import { 
+    Entity, 
+    Column, 
+    CreateDateColumn, 
+    Generated, 
+    PrimaryGeneratedColumn
+} from "typeorm";
+
 /* eslint-disable */
-const { Entity, Column, PrimaryGeneratedColumn } = require('typeorm');
 
 @Entity('user_info')
 export class User {
     @PrimaryGeneratedColumn()
-    user_id: number;
+    id: number;
+
+    @Column()
+    @Generated("uuid")
+    user_id: string;
 
     @Column()
     username: string;
@@ -19,7 +30,7 @@ export class User {
     password: string;
     
     @Column()
-    create_time: string;
+    create_time: Date;
 
     @Column()
     role: string;

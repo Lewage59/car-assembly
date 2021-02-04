@@ -1,9 +1,32 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Request, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 
-@Controller('user')
+@Controller('admin/user')
 export class UserController {
     constructor(
         private readonly userService: UserService
     ) {}
+
+    // 获取用户个人信息
+    @UseGuards(AuthGuard('jwt'))
+    @Get('info')
+    async getUserInfo(@Request() req) {
+        const { password, ...result } = await this.userService.getUserInfo(req.user.user_id);
+        return result;
+    }
+
+    // 更新用户信息
+    @UseGuards(AuthGuard('jwt'))
+    @Post('update')
+    async update (@Body() body: any) {
+        return await this.userService.update(body);
+    }
+
+    // 获取所有用户列表
+    @UseGuards(AuthGuard('jwt'))
+    @Get('userList')
+    async findAllUser () {
+        return await this.userService.findAllUser();
+    }
 }

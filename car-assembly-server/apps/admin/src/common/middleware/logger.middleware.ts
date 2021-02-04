@@ -8,8 +8,16 @@ export class LoggerMiddleware implements NestMiddleware {
         private readonly logger: LoggerService
     ) {}
     use(req: Request, res: Response, next: () => void) {
-        const { method, path } = req;
-        this.logger.log(`${method} ${path}`);
+        const { method, baseUrl, body, query } = req;
+        let params;
+
+        if (method === 'POST') {
+            params = JSON.stringify(body);
+        } else {
+            params = JSON.stringify(query);
+        }
+
+        this.logger.log(`${method} ${baseUrl} => ${params}`);
         next();
     }
 }
