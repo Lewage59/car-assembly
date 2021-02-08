@@ -1,4 +1,4 @@
-import { Body, Controller, Request, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Request, Get, Post, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 
@@ -28,5 +28,20 @@ export class UserController {
     @Get('userList')
     async findAllUser () {
         return await this.userService.findAllUser();
+    }
+
+    // 创建用户
+    @UseGuards(AuthGuard('jwt'))
+    @Post('createUser')
+    async createUser(@Body() body: any) {
+        return await this.userService.createUser(body);
+    }
+
+    // 删除用户
+    @UseGuards(AuthGuard('jwt'))
+    @Get('deleteUser')
+    async deleteUser(@Query() query: any) {
+        console.log(query);
+        return await this.userService.deleteUser(query);
     }
 }

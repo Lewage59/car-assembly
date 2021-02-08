@@ -24,6 +24,9 @@ export class User {
     email: string;
 
     @Column()
+    avatar: string;
+
+    @Column()
     tel: string;
 
     @Column()
@@ -33,5 +36,5 @@ export class User {
     create_time: Date;
 
     @Column()
-    role: string;
+    role: number;
 }

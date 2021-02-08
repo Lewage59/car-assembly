@@ -32,7 +32,23 @@ export class UserService {
         return '更新成功';
     }
 
+    async createUser (user: Object): Promise<string> {
+        console.log(user);
+        try {
+            const newUser = await this.userRepository.save(user);
+        } catch (error) {
+            console.log(error);
+            return 'error';
+        }
+        return '创建成功';
+    }
+
     async findAllUser() {
         return await this.userRepository.find();
+    }
+
+    async deleteUser(query) {
+        const removeUser = await this.userRepository.delete({ user_id: query.id });
+        return '删除成功'; 
     }
 }
