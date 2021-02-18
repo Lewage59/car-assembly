@@ -8,9 +8,13 @@ import { AuthModule } from '@app/auth';
 import { StatusMonitorModule } from 'nest-status-monitor';
 import statusMonitorConfig from './config/status-monitor';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
     imports: [
+        MulterModule.register({
+            dest: '/uploads'
+        }),
         DbModule,
         AuthModule,
         LoggerModule,

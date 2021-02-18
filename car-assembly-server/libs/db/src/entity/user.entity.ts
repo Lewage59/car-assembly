@@ -33,7 +33,10 @@ export class User {
     password: string;
     
     @Column()
-    create_time: Date;
+    create_time: string;
+
+    @Column()
+    update_time: string;
 
     @Column()
     role: number;

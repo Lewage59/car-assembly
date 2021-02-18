@@ -1,5 +1,6 @@
-import { Body, Controller, Request, Get, Post, UseGuards, Query } from '@nestjs/common';
+import { Body, Controller, Request, Get, Post, UseGuards, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 
 @Controller('admin/user')
@@ -46,5 +47,13 @@ export class UserController {
     async deleteUser(@Query() query: any) {
         console.log(query);
         return await this.userService.deleteUser(query);
+    }
+
+    // 头像上传
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadFile(@UploadedFile() file) {
+        console.log(file);
+        return true;
     }
 }

@@ -23,6 +23,7 @@ export class UserService {
 
     async update(updateParam: any): Promise<string> {
         const { user_id, ...update } = updateParam;
+        update.update_time = +new Date();
         try {
             await this.userRepository.update({ user_id }, update);
         } catch (error) {
@@ -32,12 +33,12 @@ export class UserService {
         return '更新成功';
     }
 
-    async createUser (user: Object): Promise<string> {
-        console.log(user);
+    async createUser (user: any): Promise<string> {
+        user.create_time = +new Date();
         try {
             const newUser = await this.userRepository.save(user);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return 'error';
         }
         return '创建成功';
