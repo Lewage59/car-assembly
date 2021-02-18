@@ -27,7 +27,10 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     @Get('userList')
     async findAllUser () {
-        return await this.userService.findAllUser();
+        const userList = await this.userService.findAllUser();
+        return {
+            userList
+        };
     }
 
     // 创建用户

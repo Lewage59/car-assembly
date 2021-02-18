@@ -37,4 +37,7 @@ export class User {
 
     @Column()
     role: number;
+
+    @Column()
+    status: number;
 }

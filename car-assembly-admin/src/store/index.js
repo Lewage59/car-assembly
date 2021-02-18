@@ -4,8 +4,11 @@ import getters from './getters'
 import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
+import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex)
+
+const debug = process.env.NODE_ENV !== 'production'
 
 const store = new Vuex.Store({
   modules: {
@@ -13,7 +16,9 @@ const store = new Vuex.Store({
     settings,
     user
   },
-  getters
+  getters,
+  strict: debug,
+  plugins: debug ? [createLogger()] : []
 })
 
 export default store
