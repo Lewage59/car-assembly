@@ -38,8 +38,8 @@ export class UserService {
         try {
             const newUser = await this.userRepository.save(user);
         } catch (error) {
-            console.error(error);
-            return 'error';
+            this.logger.warn(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return '创建成功';
     }
@@ -49,7 +49,12 @@ export class UserService {
     }
 
     async deleteUser(query) {
-        const removeUser = await this.userRepository.delete({ user_id: query.id });
+        try {
+            const removeUser = await this.userRepository.delete({ user_id: query.id });
+        } catch (error) {
+            this.logger.warn(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return '删除成功'; 
     }
 }

@@ -45,7 +45,6 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     @Get('deleteUser')
     async deleteUser(@Query() query: any) {
-        console.log(query);
         return await this.userService.deleteUser(query);
     }
 

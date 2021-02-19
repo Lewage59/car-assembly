@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DbModule } from '@libs/db';
 import { UserModule } from './modules/user/user.module';
+import { CarModule } from './modules/car/car.module';
+import { BrandModule } from './modules/brand/brand.module';
 import { LoggerModule } from '@app/logger';
 import { AuthModule } from '@app/auth';
 import { StatusMonitorModule } from 'nest-status-monitor';
@@ -19,7 +21,9 @@ import { MulterModule } from '@nestjs/platform-express';
         AuthModule,
         LoggerModule,
         UserModule,
-        StatusMonitorModule.setUp(statusMonitorConfig)
+        CarModule,
+        StatusMonitorModule.setUp(statusMonitorConfig),
+        BrandModule
     ],
     controllers: [AppController],
     providers: [AppService]
