@@ -41,7 +41,7 @@ export class CarService {
             .createQueryBuilder("car_model_info")
             .leftJoinAndSelect("car_model_info.series", "series")
             .leftJoinAndSelect("car_model_info.brand", "brand")
-            // .leftJoinAndSelect("car_model_info.basicParam", "basicParam")
+            .leftJoinAndSelect("car_model_info.basicParam", "basicParam")
             // .leftJoinAndSelect("car_model_info.gearbox", "gearbox")
             // .leftJoinAndSelect("car_model_info.chassis", "chassis")
             // .leftJoinAndSelect("car_model_info.wheel", "wheel")

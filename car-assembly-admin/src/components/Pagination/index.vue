@@ -92,6 +92,9 @@ export default {
 
 <style scoped>
 .pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   background: #fff;
   padding: 32px 16px;
 }

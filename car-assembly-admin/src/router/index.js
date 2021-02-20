@@ -72,7 +72,7 @@ export const constantRoutes = [
   {
     path: '/carManage',
     component: Layout,
-    redirect: '/carManage/index',
+    redirect: '/carManage/officialCar',
     name: 'carManage',
     meta: {
       title: '车辆信息管理',
@@ -83,13 +83,20 @@ export const constantRoutes = [
         path: 'officialCar',
         name: 'officialCar',
         component: () => import('@/views/car/OfficialCar/index'),
-        meta: { title: '官方车辆信息' }
+        meta: { title: '官方车辆列表' }
       },
       {
         path: 'customCar',
         name: 'customCar',
         component: () => import('@/views/car/CustomCar/index'),
-        meta: { title: '组装车辆信息' }
+        meta: { title: '组装车辆列表' }
+      },
+      {
+        path: 'carDetail/:id(\\d+)',
+        component: () => import('@/views/car/CarDetail/index'),
+        name: 'carDetail',
+        meta: { title: '汽车详情', noCache: true, activeMenu: '/carManage/officialCar' },
+        hidden: true
       }
     ]
   },

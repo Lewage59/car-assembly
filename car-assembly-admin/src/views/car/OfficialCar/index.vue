@@ -1,12 +1,12 @@
 <template>
-  <div class="official-car">
+  <div class="official-car app-container">
     <div class="filter-container">
       <div class="left">
         <!-- <el-button type="primary" icon="el-icon-plus" @click="handleCreate">添加用户</el-button> -->
         <el-button v-waves :loading="downloadLoading" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
       </div>
       <div class="right">
-        <el-input v-model="listQuery.username" placeholder="查找用户名" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
+        <el-input v-model="listQuery.username" placeholder="查询车型名称" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <!-- <el-select v-model="listQuery.role" placeholder="筛选用户角色" clearable style="width: 150px" class="filter-item">
           <el-option v-for="item in roleOptions" :key="item.label" :label="item.label" :value="item.value" />
         </el-select>
@@ -27,18 +27,21 @@
       style="width: 100%;"
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" />
-      <el-table-column label="车型名称" prop="modelName" width="150px" align="center" />
-      <el-table-column label="销售状态" prop="salesStatus" width="150px" align="center" />
-      <el-table-column label="年代款" prop="period" width="150px" align="center" />
-      <el-table-column label="外观颜色" prop="exteriorColor" width="150px" align="center" />
-      <el-table-column label="内饰颜色" prop="interiorColor" width="150px" align="center" />
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="品牌" prop="brand.brandName" width="150px" align="center" />
+      <el-table-column label="车系" prop="series.seriesName" width="150px" align="center" />
+      <el-table-column label="车型" prop="modelName" align="center" />
+      <el-table-column label="销售状态" prop="salesStatus" width="100px" align="center">
+        <template slot-scope="{row}">
+          <el-tag :type="row.salesStatus === '停售' ? 'info' : 'success'" size="medium">{{ row.salesStatus }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="年代款" prop="period" width="100px" align="center" />
+      <el-table-column label="厂商指导价(元)" prop="basicParam.guidePrice" width="150px" align="center" />
+      <el-table-column label="级别" prop="basicParam.level" width="150px" align="center" />
+      <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" :type="row.status === 1 ? 'info' : 'primary'" @click="changeStatus(row)">
-            {{ row.status === 1 ? '禁用' : '启用' }}
+          <el-button type="primary" size="mini" @click="toDetailLink(row)">
+            查看详情
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
@@ -47,7 +50,13 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getCarModelList" />
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="listQuery.currPage"
+      :limit.sync="listQuery.pageSize"
+      @pagination="getCarModelList"
+    />
   </div>
 </template>
 
@@ -55,6 +64,7 @@
 import { getCarModelList } from '@/api/car'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/index'
+import { setSession } from '@/utils/session_stroage'
 import { CODE_OK } from '@/config'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -79,11 +89,8 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
-        role: undefined,
-        username: undefined,
-        status: undefined
+        currPage: 1,
+        pageSize: 20
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -111,9 +118,10 @@ export default {
   methods: {
     getCarModelList() {
       this.listLoading = true
-      getCarModelList().then(res => {
+      getCarModelList(this.listQuery).then(res => {
         if (res.code === CODE_OK) {
-          this.carList = res.data.carList
+          this.carList = res.data.list
+          this.total = res.data.total
         }
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -125,24 +133,23 @@ export default {
       this.listQuery.page = 1
       this.getCarModelList()
     },
-    resetTemp() {
-      this.temp = {
-        username: '',
-        email: '',
-        avatar: '',
-        tel: '',
-        password: '',
-        role: 1,
-        status: 1
-      }
+    toDetailLink(row) {
+      setSession('car_model_info', row)
+
+      this.$router.push({
+        name: 'carDetail',
+        params: {
+          id: row.id
+        }
+      })
     },
     handleDelete(row, index) {
-      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该车型, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteUser(row, index)
+        // this.deleteUser(row, index)
       })
     },
     handleDownload() {
