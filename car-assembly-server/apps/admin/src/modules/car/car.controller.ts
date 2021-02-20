@@ -15,4 +15,20 @@ export class CarController {
         const result = await this.carService.findAllCarModel(query);
         return result;
     }
+
+    // 查询汽车模型基本参数
+    @UseGuards(AuthGuard('jwt'))
+    @Get('findCarParam')
+    async findCarParam(@Query() query: any) {
+        const result = await this.carService.findCarParam(query);
+        return result;
+    }
+
+    // 获取用户组装汽车列表
+    @UseGuards(AuthGuard('jwt'))
+    @Get('findAllCustom')
+    async findAllCustom(@Query() query: any) {
+        const result = await this.carService.findAllCustom(query);
+        return result;
+    }
 }

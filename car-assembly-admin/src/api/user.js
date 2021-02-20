@@ -1,3 +1,7 @@
+/**
+ * 用户信息管理api
+ */
+
 import request from '@/utils/request'
 
 // 用户登陆

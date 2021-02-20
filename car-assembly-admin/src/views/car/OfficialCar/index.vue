@@ -1,0 +1,186 @@
+<template>
+  <div class="official-car">
+    <div class="filter-container">
+      <div class="left">
+        <!-- <el-button type="primary" icon="el-icon-plus" @click="handleCreate">添加用户</el-button> -->
+        <el-button v-waves :loading="downloadLoading" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      </div>
+      <div class="right">
+        <el-input v-model="listQuery.username" placeholder="查找用户名" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
+        <!-- <el-select v-model="listQuery.role" placeholder="筛选用户角色" clearable style="width: 150px" class="filter-item">
+          <el-option v-for="item in roleOptions" :key="item.label" :label="item.label" :value="item.value" />
+        </el-select>
+        <el-select v-model="listQuery.status" placeholder="筛选用户状态" style="width: 150px" class="filter-item" @change="handleFilter">
+          <el-option v-for="item in statusOptions" :key="item.label" :label="item.label" :value="item.value" />
+        </el-select> -->
+        <el-button v-waves type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
+      </div>
+    </div>
+
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="carList"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%;"
+    >
+      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" />
+      <el-table-column label="车型名称" prop="modelName" width="150px" align="center" />
+      <el-table-column label="销售状态" prop="salesStatus" width="150px" align="center" />
+      <el-table-column label="年代款" prop="period" width="150px" align="center" />
+      <el-table-column label="外观颜色" prop="exteriorColor" width="150px" align="center" />
+      <el-table-column label="内饰颜色" prop="interiorColor" width="150px" align="center" />
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            编辑
+          </el-button>
+          <el-button size="mini" :type="row.status === 1 ? 'info' : 'primary'" @click="changeStatus(row)">
+            {{ row.status === 1 ? '禁用' : '启用' }}
+          </el-button>
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getCarModelList" />
+  </div>
+</template>
+
+<script>
+import { getCarModelList } from '@/api/car'
+import waves from '@/directive/waves' // waves directive
+import { parseTime } from '@/utils/index'
+import { CODE_OK } from '@/config'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+
+export default {
+  name: 'OfficialCar',
+  components: { Pagination },
+  directives: { waves },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'info',
+        deleted: 'danger'
+      }
+      return statusMap[status]
+    }
+  },
+  data() {
+    return {
+      tableKey: 0,
+      carList: null,
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        role: undefined,
+        username: undefined,
+        status: undefined
+      },
+      dialogFormVisible: false,
+      dialogStatus: '',
+      textMap: {
+        update: '编辑用户信息',
+        create: '创建用户'
+      },
+      rules: {
+        username: [{ required: true, message: '请输入合法用户名', trigger: 'change' }],
+        password: [{ required: true, message: '请输入合法密码', trigger: 'change' }],
+        email: [{ message: '请输入合法邮箱', trigger: 'change' }],
+        tel: [{ message: '请输入合法电话', trigger: 'change' }]
+      },
+      downloadLoading: false
+    }
+  },
+  computed: {
+    dialogType() {
+      return this.dialogStatus === 'create'
+    }
+  },
+  created() {
+    this.getCarModelList()
+  },
+  methods: {
+    getCarModelList() {
+      this.listLoading = true
+      getCarModelList().then(res => {
+        if (res.code === CODE_OK) {
+          this.carList = res.data.carList
+        }
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getCarModelList()
+    },
+    resetTemp() {
+      this.temp = {
+        username: '',
+        email: '',
+        avatar: '',
+        tel: '',
+        password: '',
+        role: 1,
+        status: 1
+      }
+    },
+    handleDelete(row, index) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteUser(row, index)
+      })
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const data = this.formatJson(filterVal)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: 'table-list'
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal) {
+      return this.carList.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.official-car {
+  .filter-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    .filter-item {
+      margin-right: 10px;
+    }
+  }
+}
+</style>

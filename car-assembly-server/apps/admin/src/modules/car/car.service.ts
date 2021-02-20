@@ -1,6 +1,14 @@
 import { LoggerService } from '@app/logger';
+import { BasicParam } from '@libs/db/entity/basicParam.entity';
 import { CarModel } from '@libs/db/entity/carModel.entity';
-import { Injectable } from '@nestjs/common';
+import { Chassis } from '@libs/db/entity/chassis.entity';
+import { Custom } from '@libs/db/entity/custom.entity';
+import { Engine } from '@libs/db/entity/engine.entity';
+import { Gearbox } from '@libs/db/entity/gearbox.entity';
+import { Inconfig } from '@libs/db/entity/inconfig.entity';
+import { Safety } from '@libs/db/entity/safety.entity';
+import { Wheel } from '@libs/db/entity/wheel.entity';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -8,6 +16,14 @@ import { Repository } from 'typeorm';
 export class CarService {
     constructor(
         @InjectRepository(CarModel) private readonly carModelRepository: Repository<CarModel>,
+        @InjectRepository(BasicParam) private readonly basicParamRepository: Repository<BasicParam>,
+        @InjectRepository(Chassis) private readonly chassisRepository: Repository<Chassis>,
+        @InjectRepository(Engine) private readonly engineRepository: Repository<Engine>,
+        @InjectRepository(Gearbox) private readonly gearboxRepository: Repository<Gearbox>,
+        @InjectRepository(Inconfig) private readonly inconfigRepository: Repository<Inconfig>,
+        @InjectRepository(Safety) private readonly safetyRepository: Repository<Safety>,
+        @InjectRepository(Wheel) private readonly wheelRepository: Repository<Wheel>,
+        @InjectRepository(Custom) private readonly customRepository: Repository<Custom>,
         private readonly logger: LoggerService
     ) {
         this.logger.setContext('CarService');
@@ -41,4 +57,72 @@ export class CarService {
             total
         };
     }
+
+    async findCarParam(param: any): Promise<object> {
+        const { modelId, paramType } = param;
+        let paramResult;
+
+        try {
+            switch (paramType) {
+                case 'basicParam':
+                    paramResult = await this.basicParamRepository.findOne({ modelId: modelId });
+                    break;
+                case 'chassis':
+                    paramResult = await this.chassisRepository.findOne({ modelId: modelId });
+                    break;
+                case 'engine':
+                    paramResult = await this.engineRepository.findOne({ modelId: modelId });
+                    break;
+                case 'gearbox':
+                    paramResult = await this.gearboxRepository.findOne({ modelId: modelId });
+                    break;
+                case 'inconfig':
+                    paramResult = await this.inconfigRepository.findOne({ modelId: modelId });
+                    break;
+                case 'safety':
+                    paramResult = await this.safetyRepository.findOne({ modelId: modelId });
+                    break;
+                case 'wheel':
+                    paramResult = await this.wheelRepository.findOne({ modelId: modelId });
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            this.logger.error(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return {
+            paramResult
+        };
+    }
+
+    async findAllCustom(param: any): Promise<object> {
+        param = Object.assign({
+            currPage: 1,
+            pageSize: 20
+        }, param);
+        
+        const currCount = (param.currPage - 1) * param.pageSize;
+        const total = await this.customRepository.count();
+        let customList;
+
+        try {
+            customList = await this.customRepository
+                .createQueryBuilder('car_custom')
+                .skip(currCount)
+                .take(param.pageSize)
+                .getMany();
+        } catch (error) {
+            this.logger.error(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return {
+            customList,
+            total
+        };
+    }
+    
 }
