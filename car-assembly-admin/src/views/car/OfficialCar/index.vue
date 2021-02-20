@@ -94,22 +94,7 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: '',
-      textMap: {
-        update: '编辑用户信息',
-        create: '创建用户'
-      },
-      rules: {
-        username: [{ required: true, message: '请输入合法用户名', trigger: 'change' }],
-        password: [{ required: true, message: '请输入合法密码', trigger: 'change' }],
-        email: [{ message: '请输入合法邮箱', trigger: 'change' }],
-        tel: [{ message: '请输入合法电话', trigger: 'change' }]
-      },
       downloadLoading: false
-    }
-  },
-  computed: {
-    dialogType() {
-      return this.dialogStatus === 'create'
     }
   },
   created() {

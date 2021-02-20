@@ -101,6 +101,20 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/brandManage',
+    component: Layout,
+    redirect: '/brandManage/index',
+    children: [
+      {
+        path: 'index',
+        name: 'brandManage',
+        component: () => import('@/views/brand/index'),
+        meta: { title: '品牌信息管理', icon: 'el-icon-postcard' }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

@@ -14,6 +14,15 @@ export function getCarModelList(params) {
 }
 
 // 获取官方车辆信息列表
+export function getCustomList(params) {
+  return request({
+    url: '/car/findAllCustom',
+    method: 'get',
+    params
+  })
+}
+
+// 获取官方车辆信息列表
 export function getCarParam(params) {
   return request({
     url: '/car/findCarParam',
@@ -21,3 +30,4 @@ export function getCarParam(params) {
     params
   })
 }
+
