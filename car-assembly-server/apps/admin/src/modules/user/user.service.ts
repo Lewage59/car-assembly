@@ -17,10 +17,6 @@ export class UserService {
         return await this.userRepository.findOne({ where: { user_id } });
     }
 
-    async findOne(username: string): Promise<User | undefined> {
-        return await this.userRepository.findOne({ where: { username } });
-    }
-
     async update(updateParam: any): Promise<string> {
         const { user_id, ...update } = updateParam;
         update.update_time = +new Date();

@@ -18,11 +18,12 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         const {
             error,
             message,
+            code
         } = exceptionRes;
         
         Logger.warn(exception);
         response.status(status).json({
-            code: status,
+            code: code || status,
             timestamp: new Date().toISOString(),
             path: request.url,
             error,
