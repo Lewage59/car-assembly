@@ -1,26 +1,12 @@
 <template>
-	<CarModel/>
+    <div id="app">
+        <router-view />
+    </div>
 </template>
 
 <script>
-import CarModel from './components/CarModel/index.vue';
 
 export default {
-    name: 'App',
-    components: {
-        CarModel
-    },
-    setup() {
-		
-    },
-    methods: {
-
-    }
+    name: 'App'
 };
 </script>
-
-<style>
-#app {
-
-}
-</style>

@@ -25,6 +25,11 @@ import Layout from '@/layout'
   }
  */
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 /**
  * constantRoutes
  * a base page that does not have permission requirements
