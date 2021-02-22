@@ -1,13 +1,13 @@
 <template>
     <div class="navbar">
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="activeIndex" class="el-menu-navbar" mode="horizontal" @select="handleSelect">
             <div class="logo-wrapper">
                 <img src="@/assets/logo/nav-logo.jpg" class="logo-image">
                 <span>汽车组装演示系统</span>
             </div>
-            <el-menu-item index="1">首页</el-menu-item>
-            <el-menu-item index="2">车型库</el-menu-item>
-            <el-menu-item index="3">个人中心</el-menu-item>
+            <el-menu-item index="home">首页</el-menu-item>
+            <el-menu-item index="carModelLib">车型库</el-menu-item>
+            <el-menu-item index="userCenter">个人中心</el-menu-item>
             <div class="right-menu">
                 <el-dropdown trigger="click">
                     <span class="el-dropdown-link">
@@ -49,10 +49,15 @@ export default {
 
 <style lang="less" scoped>
 .navbar {
+    height: 60px;
+    border-bottom: solid 1px #e6e6e6;
+    .el-menu-navbar {
+        width: 1200px;
+        margin: 0 auto;
+    }
     .logo-wrapper {
         float: left;
         height: 100%;
-        margin-left: 50px;
         margin-right: 150px;
         line-height: 60px;
         color: #303133;
@@ -68,7 +73,6 @@ export default {
         float: right;
         align-items: center;
         height: 60px;
-        margin-right: 50px;
         line-height: 60px;
         .avatar-wrapper {
             display: flex;

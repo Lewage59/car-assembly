@@ -13,14 +13,16 @@
   "dependencies": {
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
+    "echarts": "^5.0.2",
     "element-plus": "^1.0.2-beta.32",
+    "js-cookie": "^2.2.1",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "stats-js": "^1.0.1",
     "three": "^0.125.2",
     "vue": "^3.0.0",
     "vue-router": "4",
-    "vuex": "^3.5.1"
+    "vuex": "4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

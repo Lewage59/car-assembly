@@ -46,7 +46,7 @@ module.exports = {
 
 
         // 声明了变量，但是没有使用改成警告, 方便开发~
-        'no-unused-vars': 'error',
+        'no-unused-vars': 'off',
         // disallow unnecessary parentheses
         'no-extra-parens': ['error', 'all', {'nestedBinaryExpressions': false}],
 
@@ -271,7 +271,7 @@ module.exports = {
         'lines-around-directive': 'error',
 
         // 构造函数首字母大写
-        'new-cap': 'error',
+        'new-cap': 'off',
 
         // require parentheses when invoking a constructor with no arguments
         'new-parens': 'error',

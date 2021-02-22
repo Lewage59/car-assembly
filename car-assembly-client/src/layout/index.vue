@@ -19,5 +19,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.app-layout {
+    min-width: 1280px;
+}
 </style>

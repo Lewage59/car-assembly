@@ -1,11 +1,11 @@
 <template>
     <div class="car-model">
         <div id="info">
-            <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"><br>Body</span>
-            <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"><br>Details</span>
-            <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"><br>Glass</span>
+            <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"><br>车身</span>
+            <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"><br>内饰</span>
+            <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"><br>玻璃</span>
         </div>
-        <div id="container" />
+        <div ref="container" />
     </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         init() {
-            const container = document.getElementById('container');
+            const container = this.$refs.container;
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44,6 +44,8 @@ export default {
             renderer.outputEncoding = THREE.sRGBEncoding;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 0.85;
+            renderer.domElement.style.width = '940px';
+            renderer.domElement.style.height = '530px';
             container.appendChild(renderer.domElement);
 
             window.addEventListener('resize', this.onWindowResize);
@@ -228,7 +230,6 @@ export default {
 .car-model {
     #container {
         position: relative;
-        height: 400px;
     }
 }
 body {
