@@ -298,7 +298,7 @@ module.exports = {
         'padded-blocks': ['error', 'never'],
 
         // require quotes around object literal property names
-        'quote-props': ['error', 'as-needed'],
+        'quote-props': ['off', 'as-needed'],
 
         // enforce the consistent use of either backticks, double, or single quotes
         quotes: ['error', 'single'],

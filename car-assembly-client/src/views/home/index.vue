@@ -1,5 +1,5 @@
 <template>
-    <div class="home-container">
+    <div class="home-container app-container">
         <el-card class="header-card" shadow="never">
             <div class="cartype-wrapper">
                 <cartype-list></cartype-list>
@@ -62,7 +62,8 @@ export default {
             carouselImgs: [
                 require('@/assets/carousel/carousel-img1.jpg'),
                 require('@/assets/carousel/carousel-img2.jpg'),
-                require('@/assets/carousel/carousel-img3.jpg')
+                require('@/assets/carousel/carousel-img3.jpg'),
+                require('@/assets/carousel/carousel-img4.jpg')
             ],
             formInline: {
                 user: '',
@@ -85,8 +86,6 @@ export default {
 
 <style lang="less">
 .home-container {
-    width: 1200px;
-    margin: 0 auto 0;
     .header-card {
         margin: 15px 0;
         .el-card__body {

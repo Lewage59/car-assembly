@@ -1,11 +1,20 @@
 <template>
     <div class="car-model">
-        <div id="info">
-            <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"><br>车身</span>
-            <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"><br>内饰</span>
-            <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"><br>玻璃</span>
+        <div class="utils-container">
+            <div class="colorPicker">
+                <span class="label">车身</span>
+                <input id="body-color" type="color" value="#ff0000">
+            </div>
+            <div class="colorPicker">
+                <span class="label">内饰</span>
+                <input id="details-color" type="color" value="#ffffff">
+            </div>
+            <div class="colorPicker">
+                <span class="label">玻璃</span>
+                <input id="glass-color" type="color" value="#ffffff">
+            </div>
         </div>
-        <div ref="container" />
+        <div ref="container" id="container" />
     </div>
 </template>
 
@@ -23,12 +32,26 @@ let scene;
 let camera;
 let renderer;
 let grid;
+let bodyMaterial;
+let detailsMaterial;
+let glassMaterial;
 
 export default {
     name: 'Dashboard',
+    props: {
+        modelStatus: {
+            type: Object,
+            default: ()=>{}
+        }
+    },
     data() {
         return {
-            controls: null
+            controls: null,
+            carColor: {
+                body: '#ff0000',
+                detail: '#ffffff',
+                glass: '#ffffff'
+            }
         }
     },
     mounted() {
@@ -36,6 +59,7 @@ export default {
     },
     methods: {
         init() {
+            const that = this;
             const container = this.$refs.container;
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setPixelRatio(window.devicePixelRatio);
@@ -50,15 +74,16 @@ export default {
 
             window.addEventListener('resize', this.onWindowResize);
 
+            // 性能监测
             this.stats = new Stats();
             this.stats.dom.style.position = 'absolute'
             container.appendChild(this.stats.dom);
 
-            //
-
+            // 相机
             camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
             camera.position.set( 4.25, 1.4, - 4.5 );
 
+            // 控制器
             const controls = new OrbitControls(camera, container);
             controls.target.set(0, 0.5, 0);
             controls.update();
@@ -66,6 +91,7 @@ export default {
             const environment = new RoomEnvironment();
             const pmremGenerator = new THREE.PMREMGenerator(renderer);
 
+            // 场景
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0xeeeeee);
             scene.environment = pmremGenerator.fromScene(environment).texture;
@@ -79,41 +105,39 @@ export default {
 
             // materials
 
-            const bodyMaterial = new THREE.MeshPhysicalMaterial({
+            bodyMaterial = new THREE.MeshPhysicalMaterial({
                 color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
             });
 
-            const detailsMaterial = new THREE.MeshStandardMaterial({
+            detailsMaterial = new THREE.MeshStandardMaterial({
                 color: 0xffffff, metalness: 1.0, roughness: 0.5
             });
 
-            const glassMaterial = new THREE.MeshPhysicalMaterial({
+            glassMaterial = new THREE.MeshPhysicalMaterial({
                 color: 0xffffff, metalness: 0, roughness: 0.1, transmission: 0.9, transparent: true
             });
 
             const bodyColorInput = document.getElementById('body-color');
             bodyColorInput.addEventListener('input', function() {
-
+                that.carColor.body = this.value;
                 bodyMaterial.color.set(this.value);
-
             });
 
             const detailsColorInput = document.getElementById('details-color');
             detailsColorInput.addEventListener('input', function() {
-
+                that.carColor.details = this.value;
                 detailsMaterial.color.set( this.value );
-
             });
 
             const glassColorInput = document.getElementById( 'glass-color' );
             glassColorInput.addEventListener( 'input', function () {
-
+                that.carColor.glass = this.value;
                 glassMaterial.color.set( this.value );
-
             } );
 
-            // Car
-
+            this.loaderCar()
+        },
+        loaderCar() {
             const shadow = new THREE.TextureLoader().load('/models/ferrari_ao.png');
             const dracoLoader = new DRACOLoader();
             
@@ -123,39 +147,11 @@ export default {
             loader.setDRACOLoader( dracoLoader );
 
             loader.setPath("/models/").load('ferrari.glb', function ( gltf ) {
-                console.log(gltf);
-
-                const carModel = gltf.scene.children[ 0 ];
-
-                carModel.traverse((obj)=> {
-                    let parent = obj.parent.name;
-                    if (parent !== 'wheel_rl' && 
-                        parent !== 'wheel_rr' &&
-                        parent !== 'wheel_fl' && 
-                        parent !== 'wheel_fr') {
-                        console.log(obj.parent.name, obj.name);
-                    }
-                });
-                // 车灯模型
-                carModel.getObjectByName('plastic_gray').visible = false;
-                carModel.getObjectByName('lights').visible = false;
-                carModel.getObjectByName('metal').visible = false;
-                carModel.getObjectByName('lights_red').visible = false;
-                carModel.getObjectByName('grills').visible = false;
-                carModel.getObjectByName('glass').visible = false;
-                carModel.getObjectByName('leather').visible = false;
-
-                carModel.getObjectByName('carbon_fibre').visible = false;
-                carModel.getObjectByName('carbon_fibre_trim').visible = false;
-                carModel.getObjectByName('brakes').visible = false;
-                carModel.getObjectByName('carpet').visible = false;
-                carModel.getObjectByName('wipers').visible = false;
-
-                // 车身模型
-                carModel.getObjectByName('body').visible = false;
+                const carModel = gltf.scene.children[0];
                 
-                // 轮胎模型
-                carModel.getObjectByName('steering_wheel').visible = false;
+                // 默认隐藏车型
+                carModel.getObjectByName('main').visible = false;
+                carModel.getObjectByName('steering_wheel').visible = false
                 carModel.getObjectByName('wheel_rl').visible = false;
                 carModel.getObjectByName('wheel_rr').visible = false;
                 carModel.getObjectByName('wheel_fl').visible = false;
@@ -183,42 +179,84 @@ export default {
 
                 // shadow
                 const mesh = new THREE.Mesh(
-                new THREE.PlaneGeometry( 0.655 * 4, 1.3 * 4 ),
-                new THREE.MeshBasicMaterial( {
-                    map: shadow, blending: THREE.MultiplyBlending, toneMapped: false, transparent: true
-                })
+                    new THREE.PlaneGeometry( 0.655 * 4, 1.3 * 4 ),
+                    new THREE.MeshBasicMaterial({
+                        map: shadow, blending: THREE.MultiplyBlending, toneMapped: false, transparent: true
+                    })
                 );
+
                 mesh.rotation.x = - Math.PI / 2;
                 mesh.renderOrder = 2;
-                carModel.add( mesh );
 
+                carModel.add( mesh );
                 scene.add( carModel );
 
             });
         },
-        
-        onWindowResize() {
+        changeCarModel() {
+            const carModel = scene.getObjectByName('RootNode');
+            // 根模型（基本参数）
+            carModel.getObjectByName('main').visible = this.modelStatus.basicParam;
+            // 中底底盘
+            carModel.getObjectByName('carpet').visible = this.modelStatus.basicParam;
+            
+            // 车内架（底盘转向）
+            carModel.getObjectByName('interior_light').visible = this.modelStatus.chassis;
 
+            // 后尾底盘（变速箱）
+            carModel.getObjectByName('metal').visible = this.modelStatus.gearbox;
+            
+            // 内饰模型（内置配置）
+            carModel.getObjectByName('leather').visible = this.modelStatus.inconfig;
+            // 玻璃模型
+            carModel.getObjectByName( 'glass' ).visible = this.modelStatus.inconfig;
+            // 雨刮器
+            carModel.getObjectByName('wipers').visible = this.modelStatus.inconfig;
+            // 方向盘
+            carModel.getObjectByName('steering_wheel').visible = this.modelStatus.inconfig;
+
+            // 车外架（安全装备）
+            carModel.getObjectByName('interior_dark').visible = this.modelStatus.safety;
+            carModel.getObjectByName('chrome').visible = this.modelStatus.safety;
+            // 内饰模型
+            carModel.getObjectByName('carbon_fibre').visible = this.modelStatus.safety;
+            carModel.getObjectByName('carbon_fibre_trim').visible = this.modelStatus.safety;
+
+            // 车身模型（发动机）
+            carModel.getObjectByName('body').visible = this.modelStatus.engine;
+            // 车标
+            carModel.getObjectByName('yellow_trim').visible = this.modelStatus.engine;
+            carModel.getObjectByName('blue').visible = this.modelStatus.engine;
+            // 车灯
+            carModel.getObjectByName('brakes').visible = this.modelStatus.engine;
+            carModel.getObjectByName('plastic_gray').visible = this.modelStatus.engine;
+            carModel.getObjectByName('lights').visible = this.modelStatus.engine;
+            carModel.getObjectByName('lights_red').visible = this.modelStatus.engine;
+            carModel.getObjectByName('leds').visible = this.modelStatus.engine;
+            // 车尾模型
+            carModel.getObjectByName('grills').visible = this.modelStatus.engine;
+            
+            // 轮胎模型（车轮/制动）
+            carModel.getObjectByName('wheel_rl').visible = this.modelStatus.wheel;
+            carModel.getObjectByName('wheel_rr').visible = this.modelStatus.wheel;
+            carModel.getObjectByName('wheel_fl').visible = this.modelStatus.wheel;
+            carModel.getObjectByName('wheel_fr').visible = this.modelStatus.wheel;
+        },
+        onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-
             renderer.setSize( window.innerWidth, window.innerHeight );
 
         },
         render() {
-
             const time = - performance.now() / 1000;
 
             for ( let i = 0; i < wheels.length; i ++ ) {
-
                 wheels[ i ].rotation.x = time * Math.PI;
-
             }
 
             grid.position.z = - ( time ) % 5;
-
             renderer.render( scene, camera );
-
             this.stats.update();
 
         }
@@ -233,14 +271,36 @@ export default {
     }
 }
 body {
-  color: #444;
-  background: #eee;
+    color: #444;
+    background: #eee;
 }
 a {
-  color: #08f;
+    color: #08f;
+}
+.utils-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
 }
 .colorPicker {
-  display: inline-block;
-  margin: 0 10px
+    display: inline-flex;
+    align-items: center;
+    margin: 0 10px;
+    border: 1px solid #409EFF;
+    border-radius: 2px;
+    .label {
+        height: 34px;
+        line-height: 34px;
+        padding: 0 15px;
+        background-color: #409EFF;
+        font-size: 14px;
+        color: #fff;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+    }
+    input {
+        border: none;
+        background: #fff;
+    }
 }
 </style>

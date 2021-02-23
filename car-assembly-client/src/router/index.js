@@ -41,6 +41,45 @@ export const constantRoutes = [
             }
         }]
     },
+
+    {
+        path: '/user-center',
+        component: Layout,
+        redirect: '/user-center/index',
+        children: [{
+            path: 'index',
+            name: 'userCenter',
+            component: ()=> import('@/views/user-center/index'),
+            redirect: '/user-center/index/user-info',
+            meta: {
+                title: '个人中心'
+            },
+            children: [{
+                path: 'user-info',
+                name: 'userInfo',
+                component: ()=> import('@/views/user-center/user-info/index'),
+                meta: {
+                    title: '我的信息'
+                }
+            }, {
+                path: 'user-car',
+                name: 'userCar',
+                component: ()=> import('@/views/user-center/user-car/index'),
+                meta: {
+                    title: '我的组装车'
+                }
+            }]
+        }]
+    },   
+
+    {
+        path: '/car-model-detail/:id(\\d+)',
+        name: 'carModelDetail',
+        component: ()=> import('@/views/car-model-detail/index'),
+        meta: {
+            title: '车型详情'
+        }
+    },
       
     {
         path: '/car-assembly',

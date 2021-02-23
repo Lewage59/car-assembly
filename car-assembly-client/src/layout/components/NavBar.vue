@@ -1,13 +1,13 @@
 <template>
     <div class="navbar">
-        <el-menu :default-active="activeIndex" class="el-menu-navbar" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="activeIndex" class="el-menu-navbar" mode="horizontal" @select="handleSelect" router>
             <div class="logo-wrapper">
                 <img src="@/assets/logo/nav-logo.jpg" class="logo-image">
                 <span>汽车组装演示系统</span>
             </div>
-            <el-menu-item index="home">首页</el-menu-item>
-            <el-menu-item index="carModelLib">车型库</el-menu-item>
-            <el-menu-item index="userCenter">个人中心</el-menu-item>
+            <el-menu-item index="/home">首页</el-menu-item>
+            <el-menu-item index="/car-model-lib">车型库</el-menu-item>
+            <el-menu-item index="/user-center">个人中心</el-menu-item>
             <div class="right-menu">
                 <el-dropdown trigger="click">
                     <span class="el-dropdown-link">
@@ -36,12 +36,20 @@ export default {
     name: 'navbar',
     data() {
         return {
-            activeIndex: '1'
+            activeIndex: '/home'
         };
     },
+    created() {
+        this.setDefaultActive();
+    },
     methods: {
+        setDefaultActive() {
+            const path = this.$route.path.split('/');
+
+            this.activeIndex = '/' + path[1];
+        },
         handleSelect(key, keyPath) {
-            console.log(key, keyPath);
+            this.activeIndex = key;
         }
     }
 };
