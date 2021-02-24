@@ -13,7 +13,7 @@ export function getCarModelList(params) {
     });
 }
 
-// 获取官方车辆信息列表
+// 获取用户组装车辆信息列表
 export function getCustomList(params) {
     return request({
         url: '/car/findAllCustom',
@@ -22,7 +22,7 @@ export function getCustomList(params) {
     });
 }
 
-// 获取官方车辆信息列表
+// 获取官方车辆配置列表
 export function getCarParam(params) {
     return request({
         url: '/car/findCarParam',

@@ -11,6 +11,7 @@ import { Wheel } from '@libs/db/entity/wheel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LoggerService } from '@app/logger';
+import { Series } from '@libs/db/entity/series.entity';
 
 @Injectable()
 export class CarService {
@@ -24,30 +25,55 @@ export class CarService {
         @InjectRepository(Safety) private readonly safetyRepository: Repository<Safety>,
         @InjectRepository(Wheel) private readonly wheelRepository: Repository<Wheel>,
         @InjectRepository(Custom) private readonly customRepository: Repository<Custom>,
+        @InjectRepository(Series) private readonly seriesRepository: Repository<Series>,
         private readonly logger: LoggerService
     ) {
         this.logger.setContext('CarService');
     }
 
     async findAllCarModel(param: any): Promise<object> {
+        let total, listQuery, totalQuery;
         param = Object.assign({
             currPage: 1,
             pageSize: 20
         }, param);
-
+        
         const currCount = (param.currPage - 1) * param.pageSize;
-        const total = await this.carModelRepository.count();
-        const list = await this.carModelRepository
-            .createQueryBuilder("car_model_info")
-            .leftJoinAndSelect("car_model_info.series", "series")
-            .leftJoinAndSelect("car_model_info.brand", "brand")
-            .leftJoinAndSelect("car_model_info.basicParam", "basicParam")
-            // .leftJoinAndSelect("car_model_info.gearbox", "gearbox")
-            // .leftJoinAndSelect("car_model_info.chassis", "chassis")
-            // .leftJoinAndSelect("car_model_info.wheel", "wheel")
-            // .leftJoinAndSelect("car_model_info.safety", "safety")
-            // .leftJoinAndSelect("car_model_info.engine", "engine")
-            // .leftJoinAndSelect("car_model_info.inconfig", "inconfig")
+        const brandId = { 
+            brandId: param.brandId || 0
+        };
+
+        try {
+            totalQuery = this.seriesRepository;
+            listQuery = this.carModelRepository
+                .createQueryBuilder("car_model_info")
+                .innerJoinAndSelect("car_model_info.series", "series")
+                .innerJoinAndSelect("car_model_info.brand", "brand")
+                .innerJoinAndSelect("car_model_info.basicParam", "basicParam");
+                // .innerJoinAndSelect("car_model_info.gearbox", "gearbox")
+                // .innerJoinAndSelect("car_model_info.chassis", "chassis")
+                // .innerJoinAndSelect("car_model_info.wheel", "wheel")
+                // .innerJoinAndSelect("car_model_info.safety", "safety")
+                // .innerJoinAndSelect("car_model_info.engine", "engine")
+                // .innerJoinAndSelect("car_model_info.inconfig", "inconfig")
+            
+            if (param.brandId) {
+                total = await totalQuery.count(brandId);
+                listQuery = listQuery
+                    .where("car_model_info.brand_id = :brandId", brandId)
+                    .groupBy("car_model_info.series_id");
+            } else {
+                total = await totalQuery.count();
+                listQuery = listQuery
+                    .groupBy("car_model_info.series_id");
+            }
+
+        } catch (error) {
+            this.logger.warn(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        const list = await listQuery
             .skip(currCount)
             .take(param.pageSize)
             .getMany();
@@ -111,9 +137,9 @@ export class CarService {
             total = await this.customRepository.count({ userId: param.userId });
             customList = await this.customRepository
                 .createQueryBuilder('car_custom')
-                .leftJoinAndSelect("car_custom.series", "series")
-                .leftJoinAndSelect("car_custom.brand", "brand")
-                .leftJoinAndSelect("car_custom.basicParam", "basicParam")
+                .innerJoinAndSelect("car_custom.series", "series")
+                .innerJoinAndSelect("car_custom.brand", "brand")
+                .innerJoinAndSelect("car_custom.basicParam", "basicParam")
                 .where("car_custom.user_id = :userId", { userId: param.userId })
                 .skip(currCount)
                 .take(param.pageSize)

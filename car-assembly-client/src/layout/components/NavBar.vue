@@ -18,11 +18,11 @@
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                        <el-dropdown-item disabled>username</el-dropdown-item>
-                        <el-dropdown-item divided>黄金糕</el-dropdown-item>
+                        <el-dropdown-item disabled class="username">{{username}}</el-dropdown-item>
+                        <!-- <el-dropdown-item divided>黄金糕</el-dropdown-item>
                         <el-dropdown-item>狮子头</el-dropdown-item>
-                        <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                        <el-dropdown-item divided>退出登陆</el-dropdown-item>
+                        <el-dropdown-item>螺蛳粉</el-dropdown-item> -->
+                        <el-dropdown-item divided @click="logout">退出登陆</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -32,6 +32,9 @@
 </template>
 
 <script>
+import {ElMessage} from 'element-plus';
+import {mapGetters} from 'vuex';
+
 export default {
     name: 'navbar',
     data() {
@@ -42,6 +45,11 @@ export default {
     created() {
         this.setDefaultActive();
     },
+    computed: {
+        ...mapGetters([
+            'username'
+        ])
+    },
     methods: {
         setDefaultActive() {
             const path = this.$route.path.split('/');
@@ -50,6 +58,16 @@ export default {
         },
         handleSelect(key, keyPath) {
             this.activeIndex = key;
+        },
+        logout() {
+            this.$store.dispatch('user/logout');
+            ElMessage.success({
+                message: '退出成功',
+                type: 'success'
+            });
+            this.$router.push({
+                path: '/'
+            });
         }
     }
 };
@@ -88,5 +106,10 @@ export default {
             cursor: pointer;
         }
     }
+}
+
+.el-dropdown-menu__item {
+    min-width: 80px;
+    text-align: center;
 }
 </style>

@@ -10,6 +10,7 @@ import { UserController } from './modules/user/user.controller';
 import { UserModule } from './modules/user/user.module';
 import { CarModule } from './modules/car/car.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { BrandModule } from './modules/brand/brand.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
         StatusMonitorModule.setUp(statusMonitorConfig),
         UserModule,
         CarModule,
+        BrandModule
     ],
     controllers: [AppController, UserController],
     providers: [AppService],

@@ -21,22 +21,6 @@ export function getInfo() {
     });
 }
 
-// 注销用户
-export function logout() {
-    return request({
-        url: '/vue-admin-template/user/logout',
-        method: 'post'
-    });
-}
-
-// 获取所有用户列表
-export function getAllUserList() {
-    return request({
-        url: '/user/userList',
-        method: 'get'
-    });
-}
-
 // 创建用户
 export function createUser(data) {
     return request({
@@ -52,17 +36,6 @@ export function updateUserInfo(data) {
         url: '/user/update',
         method: 'post',
         data
-    });
-}
-
-// 删除用户
-export function deleteUser(id) {
-    return request({
-        url: '/user/deleteUser',
-        method: 'get',
-        params: {
-            id
-        }
     });
 }
 

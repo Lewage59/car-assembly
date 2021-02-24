@@ -1,7 +1,6 @@
 
 import {createStore} from 'vuex';
 import getters from './getters';
-// import createLogger from 'vuex/dist/logger';
 
 const debug = process.env.NODE_ENV !== 'production';
 const files = require.context('./modules', false, /\.js$/);

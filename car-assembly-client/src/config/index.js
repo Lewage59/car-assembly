@@ -1,3 +1,5 @@
+export const CODE_OK = 0;
+
 export const letter = [
     'A', 'B', 'C', 'D', 'E', 'F', 
     'G', 'H', 'I', 'J', 'K', 'L',

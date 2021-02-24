@@ -23,7 +23,6 @@ export class UserController {
     }
 
     // 创建用户
-    @UseGuards(AuthGuard('jwt'))
     @Post('createUser')
     async createUser(@Body() body: any) {
         return await this.userService.createUser(body);

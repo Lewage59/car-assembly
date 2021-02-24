@@ -40,6 +40,57 @@ export class CarModel {
         name: 'interior_color'
     })
     interiorColor: string;
+    
+    @Column({
+        name: 'series_id'
+    })
+    seriesId: number;
+
+    @Column({
+        name: 'brand_id'
+    })
+    brandId: number;
+
+    @Column({
+        name: 'basic_param_id'
+    })
+    basicParamId: number;
+
+    @Column({
+        name: 'gearbox_id',
+        select: false 
+    })
+    gearboxId: number;
+
+    @Column({
+        name: 'chassis_id',
+        select: false 
+    })
+    chassisId: number;
+
+    @Column({
+        name: 'wheel_id',
+        select: false 
+    })
+    wheelId: number;
+
+    @Column({
+        name: 'safety_id',
+        select: false 
+    })
+    safetyId: number;
+
+    @Column({
+        name: 'engine_id',
+        select: false 
+    })
+    engineId: number;
+    
+    @Column({
+        name: 'inconfig_id',
+        select: false 
+    })
+    inconfigId: number;
 
     @OneToOne(() => Series)
     @JoinColumn({ name: "series_id" })

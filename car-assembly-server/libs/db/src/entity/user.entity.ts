@@ -42,4 +42,10 @@ export class User {
 
     @Column()
     status: number;
+
+    @Column()
+    birthday: string;
+    
+    @Column()
+    sex: number;
 }

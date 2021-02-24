@@ -68,6 +68,13 @@ export const constantRoutes = [
                 meta: {
                     title: '我的组装车'
                 }
+            }, {
+                path: 'account-safty',
+                name: 'accountSafty',
+                component: ()=> import('@/views/user-center/account-safty/index'),
+                meta: {
+                    title: '账号安全'
+                }
             }]
         }]
     },   

@@ -16,6 +16,10 @@
                         <i class="el-icon-s-grid"></i>
                         <template #title>我的组装车</template>
                     </el-menu-item>
+                    <el-menu-item index="account-safty">
+                        <i class="el-icon-s-help"></i>
+                        <template #title>账号安全</template>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
@@ -35,7 +39,8 @@
 <script>
 const routerMap = {
     'user-info': '我的消息',
-    'user-car': '我的组装车'
+    'user-car': '我的组装车',
+    'account-safty': '账号安全'
 };
 
 export default {
@@ -68,7 +73,7 @@ export default {
         width: 100%;
     }
     .left-container {
-        height: 165px;
+        height: 222px;
         margin: 20px 0;
         border: 1px solid #e1e2e5;
         overflow: hidden;
