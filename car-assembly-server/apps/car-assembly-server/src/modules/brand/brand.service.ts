@@ -16,17 +16,18 @@ export class BrandService {
     }
 
     async findAllBrand(param: any): Promise<object> {
-        param = Object.assign({
-            currPage: 1,
-            pageSize: 20
-        }, param);
-
         const currCount = (param.currPage - 1) * param.pageSize;
         const total = await this.brandRepository.count();
-        const list = await this.brandRepository
-            .createQueryBuilder("brand")
-            .skip(currCount)
-            .take(param.pageSize)
+        let listQuery = this.brandRepository.createQueryBuilder("brand");
+
+        if (param.pageSize) {
+            listQuery = listQuery
+                .skip(currCount)
+                .take(param.pageSize);
+        }
+
+        const list = await listQuery
+            .orderBy("brand.pre_letter")
             .getMany();
 
         return {

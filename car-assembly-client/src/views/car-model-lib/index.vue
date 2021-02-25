@@ -2,14 +2,15 @@
     <div class="car-model-lib app-container">
         <el-affix :offset="0">
             <ul class="left-container" :style="{'height': pageHeight}">
-                <li class="brand-letter-wrapper" v-for="item in letter" :key="item">
+                <li class="brand-letter-wrapper" v-for="item in letter" :key="item.brandName">
                     <h3 class="letter">{{item}}</h3>
                     <ul class="brand-list">
-                        <li class="brand-item">宝马</li>
-                        <li class="brand-item">宝马</li>
-                        <li class="brand-item">宝马</li>
-                        <li class="brand-item">宝马</li>
-                        <li class="brand-item">宝马</li>
+                        <li 
+                            class="brand-item" 
+                            v-for="item in brandList[item]" 
+                            :key="item" 
+                            :class="{'active': item.id === activeBrand}"
+                            @click="selectBrand(item.id)">{{item.brandName}}</li>
                     </ul>
                 </li>
             </ul>
@@ -60,27 +61,37 @@
                 </el-tag>
             </el-card>
             <div class="lib-header">
-                <span class="light-num">123</span>车系符合条件
+                <span class="light-num">{{listTotal}}</span>车系符合条件
             </div>
             <div class="lib-container">
-                <el-row :gutter="1" type="flex" justify="start" align="top" v-infinite-scroll="load">
-                    <el-col :span="6" v-for="(o) in list" :key="o">
+                <el-row :gutter="1" type="flex" justify="start" align="top" v-infinite-scroll="load" :infinite-scroll-immediate="false">
+                    <el-col :span="6" v-for="(item) in carList" :key="item">
                         <el-card :body-style="{ padding: '0px' }"  shadow="hover" class="car-model-card">
                             <img src="@/assets/404_images/empty_car.png" class="car-image" />
                             <div class="car-content">
-                                <span class="main">思域</span>
-                                <div class="bottom">11.9万</div>
+                                <span class="main">{{item.series.seriesName}}</span>
+                                <div class="bottom">{{item.basicParam.guidePrice}}</div>
                             </div>
                         </el-card>
                     </el-col>
                 </el-row>
+                <div class="loading-more">
+                    <template v-if="hasMore">
+                        <i class="el-icon-loading"></i>正在加载...
+                    </template>
+                    <template v-else>
+                        已经是最底部啦~
+                    </template>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import {letter} from '@/config';
+import {letter, CODE_OK} from '@/config';
+import {getBrandList} from '@/api/brand';
+import {getCarModelList} from '@/api/car';
 
 export default {
     name: 'carModelLib',
@@ -89,13 +100,29 @@ export default {
             letter,
             pageHeight: 0,
             selectedList: ['阿三', '收到'],
-            list: 12
+            carList: [],
+            brandList: [],
+            loading: false,
+            activeBrand: 0,
+            currPage: 1,
+            pageSize: 20,
+            listTotal: 0
         };
     },
     created() {
         this.computedPageHeight();
+        this.initData();
+    },
+    computed: {
+        hasMore() {
+            return this.listTotal !== this.carList.length;
+        }
     },
     methods: {
+        initData() {
+            this.getBrandList();
+            this.getCarModelList();
+        },
         computedPageHeight() {
             this.pageHeight = window.innerHeight + 'px';
         },
@@ -103,7 +130,59 @@ export default {
             this.selectedList.splice(this.selectedList.indexOf(tag), 1);
         },
         load() {
-            this.list += 12;
+            if (!this.hasMore) {
+                return;
+            }
+            this.currPage++;
+            this.getCarModelList();
+        },
+        getBrandList() {
+            getBrandList().then(res=> {
+                if (res.code === CODE_OK) {
+                    this.brandList = this.formatBrandList(res.data.list);
+                }
+            });
+        },
+        getCarModelList() {
+            const param = {
+                currPage: this.currPage,
+                pageSize: this.pageSize
+            };
+
+            if (this.activeBrand) {
+                param.brandId = this.activeBrand;
+            }
+
+            this.loading = true;
+            getCarModelList(param).then(res=> {
+                if (res.code === CODE_OK) {
+                    this.carList = this.carList.concat(res.data.list);
+                    this.listTotal = +res.data.total;
+                }
+            }).finally(()=> {
+                this.loading = false;
+            });
+        },
+        formatBrandList(list) {
+            const formatList = {};
+
+            list.forEach(item=> {
+                if (typeof formatList[item.preLetter] === 'undefined') {
+                    formatList[item.preLetter] = [];
+                }
+                formatList[item.preLetter].push(item);
+            });
+
+            return formatList;
+        },
+        selectBrand(id) {
+            this.activeBrand = id;
+
+            // 重置列表
+            this.carList = [];
+            this.currPage = 1;
+
+            this.getCarModelList();
         }
     }
 };
@@ -136,6 +215,10 @@ export default {
                     font-size: 16px;
                     &:hover {
                         color: #409eff;
+                    }
+                    &.active {
+                        color: #409eff;
+                        background-color: #f4f4f5;
                     }
                 }
             }
@@ -207,6 +290,7 @@ export default {
             }
         }
         .lib-container {
+            min-height: 300px;
             margin: 0 20px;
             .car-model-card {
                 margin: 10px;
@@ -231,6 +315,14 @@ export default {
                         line-height: 20px;
                         color: rgb(255, 145, 0);
                     }
+                }
+            }
+            .loading-more {
+                text-align: center;
+                line-height: 50px;
+                background: #f4f4f5;
+                .el-icon-loading {
+                    margin-right: 5px;
                 }
             }
         }

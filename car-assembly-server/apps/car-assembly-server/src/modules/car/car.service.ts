@@ -44,7 +44,7 @@ export class CarService {
         };
 
         try {
-            totalQuery = this.seriesRepository;
+            totalQuery = this.carModelRepository;
             listQuery = this.carModelRepository
                 .createQueryBuilder("car_model_info")
                 .innerJoinAndSelect("car_model_info.series", "series")
@@ -58,12 +58,12 @@ export class CarService {
                 // .innerJoinAndSelect("car_model_info.inconfig", "inconfig")
             
             if (param.brandId) {
-                total = await totalQuery.count(brandId);
+                total = await totalQuery.query(`SELECT COUNT(DISTINCT series_id) AS total FROM car_model_info WHERE brand_id = ${param.brandId}`);
                 listQuery = listQuery
                     .where("car_model_info.brand_id = :brandId", brandId)
                     .groupBy("car_model_info.series_id");
             } else {
-                total = await totalQuery.count();
+                total = await totalQuery.query(`SELECT COUNT(DISTINCT series_id) as total FROM car_model_info`);
                 listQuery = listQuery
                     .groupBy("car_model_info.series_id");
             }
@@ -77,6 +77,9 @@ export class CarService {
             .skip(currCount)
             .take(param.pageSize)
             .getMany();
+
+        total = JSON.stringify(total);
+        total = JSON.parse(total)[0].total;
 
         return {
             list,
