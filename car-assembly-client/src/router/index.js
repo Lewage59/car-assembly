@@ -6,6 +6,7 @@ import Layout from '@/layout';
 export const constantRoutes = [
     {
         path: '/login',
+        name: 'login',
         component: ()=> import('@/views/login/index')
     },
   
@@ -114,7 +115,6 @@ const router = createRouter({
     routes: constantRoutes
 });
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
     const newRouter = createRouter({
         history: createWebHashHistory(),

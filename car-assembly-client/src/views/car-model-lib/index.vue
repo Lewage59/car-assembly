@@ -66,7 +66,7 @@
             <div class="lib-container">
                 <el-row :gutter="1" type="flex" justify="start" align="top" v-infinite-scroll="load" :infinite-scroll-immediate="false">
                     <el-col :span="6" v-for="(item) in carList" :key="item">
-                        <el-card :body-style="{ padding: '0px' }"  shadow="hover" class="car-model-card">
+                        <el-card :body-style="{ padding: '0px' }"  shadow="hover" class="car-model-card" @click="toDetailLink(item.id)">
                             <img src="@/assets/404_images/empty_car.png" class="car-image" />
                             <div class="car-content">
                                 <span class="main">{{item.series.seriesName}}</span>
@@ -183,6 +183,12 @@ export default {
             this.currPage = 1;
 
             this.getCarModelList();
+        },
+        toDetailLink(id) {
+            this.$router.push({
+                name: 'carModelDetail',
+                params: {id}
+            });
         }
     }
 };

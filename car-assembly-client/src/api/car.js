@@ -31,3 +31,20 @@ export function getCarParam(params) {
     });
 }
 
+// 获取官方车辆所有配置列表
+export function getAllCarParam(params) {
+    return request({
+        url: '/car/findAllCarParam',
+        method: 'get',
+        params
+    });
+}
+
+// 保存用户组装车辆信息
+export function saveCustomInfo(data) {
+    return request({
+        url: '/car/saveCustomInfo',
+        method: 'post',
+        data
+    });
+}

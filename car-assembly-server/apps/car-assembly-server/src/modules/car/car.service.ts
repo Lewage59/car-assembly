@@ -127,6 +127,57 @@ export class CarService {
         };
     }
 
+    async findAllCarParam(param: any): Promise<object> {
+        let paramResultQuery, paramResult;
+
+        param = Object.assign({
+            currPage: 1,
+            pageSize: 20
+        }, param);
+        
+        const currCount = (param.currPage - 1) * param.pageSize;
+        const { paramType } = param;
+
+        try {
+            switch (paramType) {
+                case 'basicParam':
+                    paramResultQuery = this.basicParamRepository.createQueryBuilder("basicParam");
+                    break;
+                case 'chassis':
+                    paramResultQuery = this.chassisRepository.createQueryBuilder("chassis");
+                    break;
+                case 'engine':
+                    paramResultQuery = this.engineRepository.createQueryBuilder("engine");
+                    break;
+                case 'gearbox':
+                    paramResultQuery = this.gearboxRepository.createQueryBuilder("gearbox");
+                    break;
+                case 'inconfig':
+                    paramResultQuery = this.inconfigRepository.createQueryBuilder("inconfig");
+                    break;
+                case 'safety':
+                    paramResultQuery = this.safetyRepository.createQueryBuilder("safety");
+                    break;
+                case 'wheel':
+                    paramResultQuery = this.wheelRepository.createQueryBuilder("wheel");
+                    break;
+                default:
+                    break;
+            }
+            paramResult = await paramResultQuery
+                .skip(currCount)
+                .take(param.pageSize)
+                .getMany();
+        } catch (error) {
+            this.logger.error(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return {
+            paramResult
+        };
+    }
+
     async findAllCustom(param: any): Promise<object> {
         param = Object.assign({
             currPage: 1,
@@ -140,8 +191,6 @@ export class CarService {
             total = await this.customRepository.count({ userId: param.userId });
             customList = await this.customRepository
                 .createQueryBuilder('car_custom')
-                .innerJoinAndSelect("car_custom.series", "series")
-                .innerJoinAndSelect("car_custom.brand", "brand")
                 .innerJoinAndSelect("car_custom.basicParam", "basicParam")
                 .where("car_custom.user_id = :userId", { userId: param.userId })
                 .skip(currCount)

@@ -47,12 +47,14 @@ export class Custom {
     interiorColor: string;
 
     @Column({
-        name: 'series_id'
+        name: 'series_id',
+        select: false 
     })
     seriesId: number;
 
     @Column({
-        name: 'brand_id'
+        name: 'brand_id',
+        select: false 
     })
     brandId: number;
 

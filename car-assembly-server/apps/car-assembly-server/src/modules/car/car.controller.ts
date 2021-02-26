@@ -22,6 +22,13 @@ export class CarController {
         return result;
     }
 
+    // 查询所有配件信息
+    @Get('findAllCarParam')
+    async findAllCarParam(@Query() query: any) {
+        const result = await this.carService.findAllCarParam(query);
+        return result;
+    }
+
     // 获取用户组装汽车列表
     @UseGuards(AuthGuard('jwt'))
     @Get('findAllCustom')

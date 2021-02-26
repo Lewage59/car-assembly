@@ -3,15 +3,15 @@
         <div class="utils-container">
             <div class="colorPicker">
                 <span class="label">车身</span>
-                <input id="body-color" type="color" value="#ff0000">
+                <input id="body-color" type="color" :value="carColor.body">
             </div>
             <div class="colorPicker">
                 <span class="label">内饰</span>
-                <input id="details-color" type="color" value="#ffffff">
+                <input id="details-color" type="color" :value="carColor.detail">
             </div>
             <div class="colorPicker">
                 <span class="label">玻璃</span>
-                <input id="glass-color" type="color" value="#ffffff">
+                <input id="glass-color" type="color" :value="carColor.glass">
             </div>
         </div>
         <div ref="container" id="container" />
@@ -125,7 +125,7 @@ export default {
 
             const detailsColorInput = document.getElementById('details-color');
             detailsColorInput.addEventListener('input', function() {
-                that.carColor.details = this.value;
+                that.carColor.detail = this.value;
                 detailsMaterial.color.set( this.value );
             });
 
