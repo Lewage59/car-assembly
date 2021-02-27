@@ -22,10 +22,19 @@ export function getCustomList(params) {
     });
 }
 
-// 获取官方车辆配置列表
+// 获取官方车辆配置信息
 export function getCarParam(params) {
     return request({
         url: '/car/findCarParam',
+        method: 'get',
+        params
+    });
+}
+
+// 获取官方车辆配置信息
+export function getCarSeriesList(params) {
+    return request({
+        url: '/car/findAllCarSeries',
         method: 'get',
         params
     });

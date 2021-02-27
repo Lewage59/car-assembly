@@ -87,6 +87,47 @@ export class CarService {
         };
     }
 
+    async findAllCarSeries(param: any): Promise<object> {
+        let total, listQuery;
+        param = Object.assign({
+            currPage: 1,
+            pageSize: 20
+        }, param);
+        
+        const currCount = (param.currPage - 1) * param.pageSize;
+
+        try {
+            total = await this.carModelRepository.count({seriesId: param.seriesId});
+            listQuery = this.carModelRepository
+                .createQueryBuilder("car_model_info")
+                .innerJoinAndSelect("car_model_info.series", "series")
+                .innerJoinAndSelect("car_model_info.brand", "brand")
+                .innerJoinAndSelect("car_model_info.basicParam", "basicParam");
+                // .innerJoinAndSelect("car_model_info.gearbox", "gearbox")
+                // .innerJoinAndSelect("car_model_info.chassis", "chassis")
+                // .innerJoinAndSelect("car_model_info.wheel", "wheel")
+                // .innerJoinAndSelect("car_model_info.safety", "safety")
+                // .innerJoinAndSelect("car_model_info.engine", "engine")
+                // .innerJoinAndSelect("car_model_info.inconfig", "inconfig")
+            
+            listQuery = listQuery.where("car_model_info.series_id = :seriesId", {seriesId: param.seriesId});
+
+        } catch (error) {
+            this.logger.warn(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        const list = await listQuery
+            .skip(currCount)
+            .take(param.pageSize)
+            .getMany();
+
+        return {
+            list,
+            total
+        };
+    }
+
     async findCarParam(param: any): Promise<object> {
         const { modelId, paramType } = param;
         let paramResult;

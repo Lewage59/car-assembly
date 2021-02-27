@@ -10,44 +10,15 @@
                             v-for="item in brandList[item]" 
                             :key="item" 
                             :class="{'active': item.id === activeBrand}"
-                            @click="selectBrand(item.id)">{{item.brandName}}</li>
+                            @click="selectBrand(item)">{{item.brandName}}</li>
                     </ul>
                 </li>
             </ul>
         </el-affix>
         <div class="right-container">
             <h2 class="container-title">条件筛选</h2>
-            <section class="select-wrapper">
-                <div class="select-conditions">
-                    <span class="select-title">价格：</span>
-                    <ul class="select-conditioin-list">
-                        <li class="select-conditioin-item selected">不限</li>
-                        <li class="select-conditioin-item">不限</li>
-                    </ul>
-                </div>
-                <div class="select-conditions">
-                    <span class="select-title">价格：</span>
-                    <ul class="select-conditioin-list">
-                        <li class="select-conditioin-item selected">不限</li>
-                        <li class="select-conditioin-item">不限</li>
-                    </ul>
-                </div>
-                <div class="select-conditions">
-                    <span class="select-title">价格：</span>
-                    <ul class="select-conditioin-list">
-                        <li class="select-conditioin-item selected">不限</li>
-                        <li class="select-conditioin-item">不限</li>
-                    </ul>
-                </div>
-                <div class="select-conditions">
-                    <span class="select-title">价格：</span>
-                    <ul class="select-conditioin-list">
-                        <li class="select-conditioin-item selected">不限</li>
-                        <li class="select-conditioin-item">不限</li>
-                    </ul>
-                </div>
-            </section>
-            <el-card shadow="never" class="selected-list" :body-style="{padding:'8px'}">
+            <select-group></select-group>
+            <el-card shadow="never" class="selected-list" :body-style="{padding:'8px'}" v-if="selectedList.length">
                 <span class="title">已选条件：</span>
                 <el-tag
                     class="selected-item"
@@ -63,20 +34,27 @@
             <div class="lib-header">
                 <span class="light-num">{{listTotal}}</span>车系符合条件
             </div>
-            <div class="lib-container">
-                <el-row :gutter="1" type="flex" justify="start" align="top" v-infinite-scroll="load" :infinite-scroll-immediate="false">
+            <div class="lib-container" v-if="carList.length">
+                <el-row 
+                    :gutter="1" 
+                    type="flex" 
+                    justify="start" 
+                    align="top" 
+                    v-infinite-scroll="load" 
+                    :infinite-scroll-immediate="false"
+                    :infinite-scroll-delay="500">
                     <el-col :span="6" v-for="(item) in carList" :key="item">
-                        <el-card :body-style="{ padding: '0px' }"  shadow="hover" class="car-model-card" @click="toDetailLink(item.id)">
+                        <el-card :body-style="{ padding: '0px' }"  shadow="hover" class="car-model-card" @click="showSeriesDialog(item)">
                             <img src="@/assets/404_images/empty_car.png" class="car-image" />
                             <div class="car-content">
                                 <span class="main">{{item.series.seriesName}}</span>
-                                <div class="bottom">{{item.basicParam.guidePrice}}</div>
+                                <div class="bottom">{{formatPriceText(item.basicParam.guidePrice)}}</div>
                             </div>
                         </el-card>
                     </el-col>
                 </el-row>
                 <div class="loading-more">
-                    <template v-if="hasMore">
+                    <template v-if="hasMore || loading">
                         <i class="el-icon-loading"></i>正在加载...
                     </template>
                     <template v-else>
@@ -84,7 +62,9 @@
                     </template>
                 </div>
             </div>
+            <el-empty description="暂无数据" v-else></el-empty>
         </div>
+        <series-dialog ref="seriesDialog"></series-dialog>
     </div>
 </template>
 
@@ -92,14 +72,20 @@
 import {letter, CODE_OK} from '@/config';
 import {getBrandList} from '@/api/brand';
 import {getCarModelList} from '@/api/car';
+import SelectGroup from './components/SelectGroup';
+import SeriesDialog from './components/SeriesDialog';
 
 export default {
     name: 'carModelLib',
+    components: {
+        SelectGroup,
+        SeriesDialog
+    },
     data() {
         return {
             letter,
             pageHeight: 0,
-            selectedList: ['阿三', '收到'],
+            selectedList: [],
             carList: [],
             brandList: [],
             loading: false,
@@ -127,7 +113,14 @@ export default {
             this.pageHeight = window.innerHeight + 'px';
         },
         handleClose(tag) {
-            this.selectedList.splice(this.selectedList.indexOf(tag), 1);
+            const index = this.selectedList.indexOf(tag);
+
+            if (this.activeBrand && !index) {
+                this.activeBrand = 0;
+                this.resetList();
+                this.getCarModelList();
+            }
+            this.selectedList.splice(index, 1);
         },
         load() {
             if (!this.hasMore) {
@@ -175,20 +168,31 @@ export default {
 
             return formatList;
         },
-        selectBrand(id) {
-            this.activeBrand = id;
+        selectBrand(item) {
+            this.activeBrand = item.id;
 
             // 重置列表
-            this.carList = [];
-            this.currPage = 1;
+            this.resetList();
+
+            // 设置选择条件
+            if (this.activeBrand) {
+                this.selectedList[0] = item.brandName;
+            }
 
             this.getCarModelList();
         },
-        toDetailLink(id) {
-            this.$router.push({
-                name: 'carModelDetail',
-                params: {id}
-            });
+        resetList() {
+            this.carList = [];
+            this.currPage = 1;
+        },
+        showSeriesDialog(item) {
+            this.$refs.seriesDialog.showDialog(item);
+        },
+        formatPriceText(value) {
+            if (value === '-' || !value) {
+                return '暂无报价';
+            }
+            return value + '左右';
         }
     }
 };
@@ -203,6 +207,7 @@ export default {
     .left-container {
         width: 230px;
         overflow: auto;
+        background-color: #fff;
         .letter {
             position: sticky;
             top: 0;
@@ -240,38 +245,6 @@ export default {
             font-size: 24px;
             font-weight: 500;
             box-shadow: 0 1px 0 0 #ededed;
-        }
-        .select-wrapper {
-            .select-conditions {
-                height: 54px;
-                line-height: 54px;
-                margin: 0 20px;
-                box-sizing: border-box;
-                font-size: 14px;
-                border-bottom: 1px solid #ededed;
-                .select-title {
-                    color: #666;
-                }
-                .select-conditioin-list {
-                    display: inline-block;
-                    .select-conditioin-item {
-                        display: inline-block;
-                        padding: 4px 8px;
-                        margin: 0 2px;
-                        line-height: 20px;
-                        cursor: pointer;
-                        border-radius: 4px;
-                        -webkit-transition: all 0.1s ease-in-out;
-                        transition: all 0.1s ease-in-out;
-                        &:hover {
-                            background: rgba(68, 0, 255, 0.2);
-                        }
-                        &.selected {
-                            background-color: #ffe100;
-                        }
-                    }
-                }
-            }
         }
         .selected-list {
             margin: 0 20px;

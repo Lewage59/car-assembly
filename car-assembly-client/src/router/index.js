@@ -81,12 +81,17 @@ export const constantRoutes = [
     },   
 
     {
-        path: '/car-model-detail/:id(\\d+)',
-        name: 'carModelDetail',
-        component: ()=> import('@/views/car-model-detail/index'),
-        meta: {
-            title: '车型详情'
-        }
+        path: '/car-model-detail',
+        component: Layout,
+        redirect: '/car-model-detail/:id(\\d+)',
+        children: [{
+            path: ':id(\\d+)',
+            name: 'carModelDetail',
+            component: ()=> import('@/views/car-model-detail/index'),
+            meta: {
+                title: '车型详情'
+            }
+        }]
     },
       
     {

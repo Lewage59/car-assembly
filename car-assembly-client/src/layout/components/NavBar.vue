@@ -9,7 +9,7 @@
             <el-menu-item index="/car-model-lib">车型库</el-menu-item>
             <el-menu-item index="/user-center">个人中心</el-menu-item>
             <div class="right-menu">
-                <el-dropdown trigger="click">
+                <el-dropdown trigger="click" v-if="username">
                     <span class="el-dropdown-link">
                         <div class="avatar-wrapper">
                             <el-avatar size="medium" icon="el-icon-s-custom"></el-avatar>
@@ -19,13 +19,19 @@
                     <template #dropdown>
                         <el-dropdown-menu>
                         <el-dropdown-item disabled class="username">{{username}}</el-dropdown-item>
-                        <!-- <el-dropdown-item divided>黄金糕</el-dropdown-item>
-                        <el-dropdown-item>狮子头</el-dropdown-item>
-                        <el-dropdown-item>螺蛳粉</el-dropdown-item> -->
                         <el-dropdown-item divided @click="logout">退出登陆</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
+                <div v-else>
+                    <router-link :to="'/login?redirect=' + $route.path">
+                        <el-link>登陆</el-link>
+                    </router-link>
+                    <el-divider direction="vertical"></el-divider>
+                    <router-link :to="'/login?register=true&redirect=' + $route.path">
+                        <el-link>注册</el-link>
+                    </router-link>
+                </div>
             </div>
         </el-menu>
     </div>
@@ -65,9 +71,7 @@ export default {
                 message: '退出成功',
                 type: 'success'
             });
-            this.$router.push({
-                path: '/'
-            });
+            window.location.replace('/');
         }
     }
 };

@@ -19,7 +19,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">找车</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSearch">找车</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -79,6 +79,9 @@ export default {
             this.$router.push({
                 path: '/car-assembly'
             });
+        },
+        onSearch() {
+            
         }
     }
 };

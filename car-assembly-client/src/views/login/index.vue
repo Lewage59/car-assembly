@@ -146,7 +146,10 @@ export default {
     watch: {
         $route: {
             handler: function(route) {
-                this.redirect = route.query && route.query.redirect;
+                if (route.query) {
+                    this.redirect = route.query.redirect;
+                    this.isLogin = !route.query.register;
+                }
             },
             immediate: true
         }

@@ -15,6 +15,13 @@ export class CarController {
         return result;
     }
 
+    // 获取官方汽车列表
+    @Get('findAllCarSeries')
+    async findAllCarSeries(@Query() query: any) {
+        const result = await this.carService.findAllCarSeries(query);
+        return result;
+    }
+
     // 查询汽车模型基本参数
     @Get('findCarParam')
     async findCarParam(@Query() query: any) {
@@ -51,4 +58,5 @@ export class CarController {
     async deleteCustomInfo(@Body() body: object) {
         return await this.carService.deleteCustomInfo(body);
     }
+
 }
