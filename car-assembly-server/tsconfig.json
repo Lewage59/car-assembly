@@ -30,6 +30,12 @@
       ],
       "@app/logger/*": [
         "libs/logger/src/*"
+      ],
+      "libs/email": [
+        "libs/email/src"
+      ],
+      "libs/email/*": [
+        "libs/email/src/*"
       ]
     }
   },

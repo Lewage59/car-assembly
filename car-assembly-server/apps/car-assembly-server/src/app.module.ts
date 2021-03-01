@@ -11,6 +11,7 @@ import { UserModule } from './modules/user/user.module';
 import { CarModule } from './modules/car/car.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { BrandModule } from './modules/brand/brand.module';
+import { EmailModule } from 'libs/email';
 
 @Module({
     imports: [
@@ -20,7 +21,8 @@ import { BrandModule } from './modules/brand/brand.module';
         StatusMonitorModule.setUp(statusMonitorConfig),
         UserModule,
         CarModule,
-        BrandModule
+        BrandModule,
+        EmailModule
     ],
     controllers: [AppController, UserController],
     providers: [AppService],

@@ -15,7 +15,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/car-assembly-server/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/car-assembly-server/tsconfig.app.json"
+        "tsConfigPath": "apps/car-assembly-server/tsconfig.app.json",
+        "assets": ["templates/*"]
       }
     },
     "admin": {
@@ -52,6 +53,15 @@
       "sourceRoot": "libs/logger/src",
       "compilerOptions": {
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
+      }
+    },
+    "email": {
+      "type": "library",
+      "root": "libs/email",
+      "entryFile": "index",
+      "sourceRoot": "libs/email/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/email/tsconfig.lib.json"
       }
     }
   }
