@@ -22,14 +22,13 @@
                 <span class="title">已选条件：</span>
                 <el-tag
                     class="selected-item"
-                    :key="tag"
                     size="medium"
-                    v-for="tag in selectedList"
+                    v-for="(item, index) in selectedList"
+                    :key="item.type"
                     closable
                     :disable-transitions="false"
-                    @close="handleClose(tag)"
-                    v-show="tag">
-                    {{tag}}
+                    @close="handleClose(item.tag, index)">
+                    {{item.tag}}
                 </el-tag>
             </el-card>
             <div class="lib-header">
@@ -113,19 +112,24 @@ export default {
         computedPageHeight() {
             this.pageHeight = window.innerHeight + 'px';
         },
-        handleClose(tag) {
-            const index = this.selectedList.indexOf(tag);
+        handleClose(tag, index) {
+            let tmp;
 
-            if (index === 0) {
+            this.selectedList.some(item=> {
+                tmp = item;
+                return item.tag === tag;
+            });
+
+            if (tmp.type === 1) {
                 delete this.selectedParam.brandId;
-            } else if (index === 1) {
+            } else if (tmp.type === 2) {
                 delete this.selectedParam.level;
                 this.$refs.selectGroup.resetSelected();
             }
 
             this.resetList();
             this.getCarModelList();
-            this.selectedList[index] = '';
+            this.selectedList.splice(index, 1);
         },
         load() {
             if (!this.hasMore) {
@@ -170,15 +174,22 @@ export default {
             return formatList;
         },
         selectBrand(item) {
-            this.selectedParam.brandId = item.id;
+            const tmp = {
+                tag: item.brandName,
+                type: 1    
+            };
 
             // 重置列表
             this.resetList();
 
             // 设置选择条件
             if (this.selectedParam.brandId) {
-                this.selectedList[0] = item.brandName;
+                this.selectedList.splice(0, 1, tmp);
+            } else {
+                this.selectedList.unshift(tmp);
             }
+            
+            this.selectedParam.brandId = item.id;
 
             this.getCarModelList();
         },
@@ -196,12 +207,21 @@ export default {
             return value + '左右';
         },
         handleSelected(selected) {
+            const tmp = {
+                tag: carType[selected[0]].key,
+                type: 2
+            };
+
             if (selected[0]) {
+                if (this.selectedParam.level) {
+                    this.selectedList.splice(this.selectedList.length - 1, 1, tmp);
+                } else {
+                    this.selectedList.push(tmp);
+                }
                 this.selectedParam.level = selected[0];
-                this.selectedList[1] = carType[selected[0]].key;
             } else {
                 delete this.selectedParam.level;
-                this.handleClose(carType[selected[0]].key);
+                this.selectedList.pop();
             }
             this.resetList();
             this.getCarModelList();
