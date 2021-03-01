@@ -32,7 +32,7 @@ export class CarService {
     }
 
     async findAllCarModel(param: any): Promise<object> {
-        let total, listQuery, totalQuery;
+        let total, list, listQuery, totalQuery;
         param = Object.assign({
             currPage: 1,
             pageSize: 20
@@ -47,37 +47,51 @@ export class CarService {
             totalQuery = this.carModelRepository;
             listQuery = this.carModelRepository
                 .createQueryBuilder("car_model_info")
-                .innerJoinAndSelect("car_model_info.series", "series")
-                .innerJoinAndSelect("car_model_info.brand", "brand")
-                .innerJoinAndSelect("car_model_info.basicParam", "basicParam");
-                // .innerJoinAndSelect("car_model_info.gearbox", "gearbox")
-                // .innerJoinAndSelect("car_model_info.chassis", "chassis")
-                // .innerJoinAndSelect("car_model_info.wheel", "wheel")
-                // .innerJoinAndSelect("car_model_info.safety", "safety")
-                // .innerJoinAndSelect("car_model_info.engine", "engine")
-                // .innerJoinAndSelect("car_model_info.inconfig", "inconfig")
+                .leftJoinAndSelect("car_model_info.series", "series")
+                .leftJoinAndSelect("car_model_info.brand", "brand")
+                .leftJoinAndSelect("car_model_info.basicParam", "basicParam")
+                // .leftJoinAndSelect("car_model_info.gearbox", "gearbox")
+                // .leftJoinAndSelect("car_model_info.chassis", "chassis")
+                // .leftJoinAndSelect("car_model_info.wheel", "wheel")
+                // .leftJoinAndSelect("car_model_info.safety", "safety")
+                // .leftJoinAndSelect("car_model_info.engine", "engine")
+                // .leftJoinAndSelect("car_model_info.inconfig", "inconfig")
+                .where("1=1");
+
+            let totalSql = `SELECT COUNT(DISTINCT c.series_id) AS total FROM car_model_info c left JOIN basic_param b ON b.basic_param_id = c.basic_param_id where 1=1 `;
             
             if (param.brandId) {
-                total = await totalQuery.query(`SELECT COUNT(DISTINCT series_id) AS total FROM car_model_info WHERE brand_id = ${param.brandId}`);
-                listQuery = listQuery
-                    .where("car_model_info.brand_id = :brandId", brandId)
-                    .groupBy("car_model_info.series_id");
-            } else {
-                total = await totalQuery.query(`SELECT COUNT(DISTINCT series_id) as total FROM car_model_info`);
-                listQuery = listQuery
-                    .groupBy("car_model_info.series_id");
+                totalSql = totalSql + `and c.brand_id = ${param.brandId} `;
+                listQuery = listQuery.andWhere("car_model_info.brand_id = :brandId", brandId);
             }
+
+            if (param.level) {
+                const levelList = {
+                    1: '型车',
+                    2: 'SUV',
+                    3: 'MPV',
+                    4: '跑车',
+                    5: '皮卡',
+                    6: '微面',
+                    7: '微卡',
+                    8: '轻客'
+                };
+                totalSql = totalSql + `and b.level like '%${levelList[param.level]}%'`;
+                listQuery = listQuery.andWhere(`basicParam.level like '%${levelList[param.level]}%'`);
+            }
+
+            total = await totalQuery.query(totalSql);
+            list = await listQuery
+                .groupBy("car_model_info.series_id")
+                .skip(currCount)
+                .take(param.pageSize)
+                .getMany();
 
         } catch (error) {
             this.logger.warn(error);
             throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
-        const list = await listQuery
-            .skip(currCount)
-            .take(param.pageSize)
-            .getMany();
-
         total = JSON.stringify(total);
         total = JSON.parse(total)[0].total;
 

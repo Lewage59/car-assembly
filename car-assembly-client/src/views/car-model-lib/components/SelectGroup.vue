@@ -1,10 +1,14 @@
 <template>
     <section class="select-group">
         <div class="select-conditions">
-            <span class="select-title">价格：</span>
+            <span class="select-title">级别：</span>
             <ul class="select-conditioin-list">
-                <li class="select-conditioin-item selected">不限</li>
-                <li class="select-conditioin-item">不限</li>
+                <li 
+                    class="select-conditioin-item" 
+                    :class="{'selected': index === currSelectIndexs[0]}"
+                    v-for="(item, index) in levelList" 
+                    :key="item.key" 
+                    @click="handleSelected(index)">{{item.key}}</li>
             </ul>
         </div>
         <!-- <div class="select-conditions">
@@ -32,8 +36,25 @@
 </template>
 
 <script>
+import {carType} from '@/config';
+
 export default {
-    name: 'selectGroup'
+    name: 'selectGroup',
+    data() {
+        return {
+            levelList: carType,
+            currSelectIndexs: [0]
+        };
+    },
+    methods: {
+        handleSelected(index) {
+            this.currSelectIndexs[0] = index;
+            this.$emit('selected', this.currSelectIndexs);
+        },
+        resetSelected() {
+            this.currSelectIndexs[0] = 0;
+        }
+    }
 };
 </script> 
 

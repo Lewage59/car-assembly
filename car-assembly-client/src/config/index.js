@@ -127,3 +127,35 @@ export const partsKeyToText = {
         spareTiresStandard: '备胎规格'
     }
 };
+
+// 车辆模型类型
+export const carType = [
+    {
+        key: '不限',
+        value: 0
+    }, {
+        key: '轿车',
+        value: '型车'
+    }, {
+        key: 'SUV',
+        value: 'SUV'
+    }, {
+        key: 'MPV',
+        value: 'MPV'
+    }, {
+        key: '跑车',
+        value: '跑车'
+    }, {
+        key: '皮卡',
+        value: '皮卡'
+    }, {
+        key: '微面',
+        value: '微面'
+    }, {
+        key: '微卡',
+        value: '微卡'
+    }, {
+        key: '轻客',
+        value: '轻客'
+    }
+];

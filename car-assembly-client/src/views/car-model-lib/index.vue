@@ -9,7 +9,7 @@
                             class="brand-item" 
                             v-for="item in brandList[item]" 
                             :key="item" 
-                            :class="{'active': item.id === activeBrand}"
+                            :class="{'active': item.id === selectedParam.brandId}"
                             @click="selectBrand(item)">{{item.brandName}}</li>
                     </ul>
                 </li>
@@ -17,7 +17,7 @@
         </el-affix>
         <div class="right-container">
             <h2 class="container-title">条件筛选</h2>
-            <select-group></select-group>
+            <select-group @selected="handleSelected" ref="selectGroup"></select-group>
             <el-card shadow="never" class="selected-list" :body-style="{padding:'8px'}" v-if="selectedList.length">
                 <span class="title">已选条件：</span>
                 <el-tag
@@ -27,7 +27,8 @@
                     v-for="tag in selectedList"
                     closable
                     :disable-transitions="false"
-                    @close="handleClose(tag)">
+                    @close="handleClose(tag)"
+                    v-show="tag">
                     {{tag}}
                 </el-tag>
             </el-card>
@@ -69,7 +70,7 @@
 </template>
 
 <script>
-import {letter, CODE_OK} from '@/config';
+import {letter, CODE_OK, carType} from '@/config';
 import {getBrandList} from '@/api/brand';
 import {getCarModelList} from '@/api/car';
 import SelectGroup from './components/SelectGroup';
@@ -89,10 +90,10 @@ export default {
             carList: [],
             brandList: [],
             loading: false,
-            activeBrand: 0,
             currPage: 1,
             pageSize: 20,
-            listTotal: 0
+            listTotal: 0,
+            selectedParam: {}
         };
     },
     created() {
@@ -115,12 +116,16 @@ export default {
         handleClose(tag) {
             const index = this.selectedList.indexOf(tag);
 
-            if (this.activeBrand && !index) {
-                this.activeBrand = 0;
-                this.resetList();
-                this.getCarModelList();
+            if (index === 0) {
+                delete this.selectedParam.brandId;
+            } else if (index === 1) {
+                delete this.selectedParam.level;
+                this.$refs.selectGroup.resetSelected();
             }
-            this.selectedList.splice(index, 1);
+
+            this.resetList();
+            this.getCarModelList();
+            this.selectedList[index] = '';
         },
         load() {
             if (!this.hasMore) {
@@ -137,14 +142,10 @@ export default {
             });
         },
         getCarModelList() {
-            const param = {
+            const param = Object.assign({
                 currPage: this.currPage,
                 pageSize: this.pageSize
-            };
-
-            if (this.activeBrand) {
-                param.brandId = this.activeBrand;
-            }
+            }, this.selectedParam);
 
             this.loading = true;
             getCarModelList(param).then(res=> {
@@ -169,13 +170,13 @@ export default {
             return formatList;
         },
         selectBrand(item) {
-            this.activeBrand = item.id;
+            this.selectedParam.brandId = item.id;
 
             // 重置列表
             this.resetList();
 
             // 设置选择条件
-            if (this.activeBrand) {
+            if (this.selectedParam.brandId) {
                 this.selectedList[0] = item.brandName;
             }
 
@@ -193,6 +194,17 @@ export default {
                 return '暂无报价';
             }
             return value + '左右';
+        },
+        handleSelected(selected) {
+            if (selected[0]) {
+                this.selectedParam.level = selected[0];
+                this.selectedList[1] = carType[selected[0]].key;
+            } else {
+                delete this.selectedParam.level;
+                this.handleClose(carType[selected[0]].key);
+            }
+            this.resetList();
+            this.getCarModelList();
         }
     }
 };
