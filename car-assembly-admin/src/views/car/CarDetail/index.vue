@@ -1,9 +1,10 @@
 <template>
-  <div class="carDetail-container">
+  <div class="carDetail-container app-container">
+    <el-page-header content="参数配置详情" @back="goBack" />
     <el-card class="car-card-wrapper">
-      <div slot="header" class="clearfix">
+      <template #header>
         <span>车型参数</span>
-      </div>
+      </template>
       <div class="car-info">
         <el-row>
           <el-col :span="8">
@@ -36,8 +37,8 @@
       </div>
     </el-card>
     <el-tabs type="border-card" @tab-click="handleTabClick">
-      <el-tab-pane v-for="(item, index) in paramList" :key="index" :label="item">
-        <column-table :value="paramValue" />
+      <el-tab-pane v-for="item in paramList" :key="item" v-loading="isLoading" :label="item">
+        <column-table :value="paramValue" :curr-param="currParam" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -56,7 +57,7 @@ const paramMap = {
   '底盘转向': 'chassis',
   '车轮/制动': 'wheel',
   '安全装备': 'safety',
-  '内置配置': 'engine'
+  '内置配置': 'inconfig'
 }
 
 export default {
@@ -68,7 +69,9 @@ export default {
     return {
       modelId: null,
       carModelInfo: null,
-      paramValue: null
+      paramValue: null,
+      isLoading: false,
+      currParam: 'basicParam'
     }
   },
   computed: {
@@ -83,18 +86,28 @@ export default {
   },
   methods: {
     getCarParam(paramType) {
+      this.currParam = paramMap[paramType]
       const param = {
         modelId: this.modelId,
-        paramType: paramMap[paramType]
+        paramType: this.currParam
       }
-      getCarParam(param).then((res) => {
+
+      this.isLoading = true
+      getCarParam(param).then(res => {
         if (res.code === CODE_OK) {
           this.paramValue = res.data.paramResult
         }
+      }).finally(() => {
+        this.isLoading = false
       })
     },
     handleTabClick(tab) {
-      this.getCarParam(tab.label)
+      const tabName = Object.keys(paramMap)[tab.index]
+
+      this.getCarParam(tabName)
+    },
+    goBack() {
+      this.$router.back()
     }
   }
 }
@@ -102,91 +115,83 @@ export default {
 
 <style lang="scss" scoped>
 .carDetail-container {
-  padding: 20px;
+    padding: 20px;
 
-  .car-card-wrapper {
-    margin-bottom: 20px;
-    .car-info {
-      .car-image {
-        width: 280px;
-      }
-      .car-name {
-        line-height: 40px;
-        margin-top: 25px;
-        margin-bottom: 12px;
-        font-size: 28px;
-        font-weight: 500;
-      }
-      .param-block {
-        display: inline-block;
-        vertical-align: top;
-        font-size: 16px;
-        color: rgb(102, 102, 102);
-        .dealer {
-          margin: 0;
+    .car-card-wrapper {
+        margin: 20px 0;
+        .car-info {
+            .car-image {
+                width: 280px;
+            }
+            .car-name {
+                line-height: 40px;
+                margin-top: 25px;
+                margin-bottom: 12px;
+                font-size: 28px;
+                font-weight: 500;
+            }
+            .param-block {
+                display: inline-block;
+                vertical-align: top;
+                font-size: 16px;
+                color: rgb(102, 102, 102);
+                .dealer {
+                    margin: 0;
+                }
+            }
+            .param-block:nth-child(1) {
+                padding-right: 16px;
+                .dealer:nth-child(1) {
+                    line-height: 33px;
+                    margin-top: -7px;
+                    margin-bottom: 7px;
+                }
+                .price-text {
+                    font-size: 24px;
+                    font-weight: 500;
+                    vertical-align: middle;
+                    color: rgb(255, 145, 0);
+                }
+                .vendor {
+                    line-height: 22px;
+                    font-size: 16px;
+                    color: rgb(102, 102, 102);
+                }
+                .vendor-text {
+                    color: rgb(26, 26, 26);
+                }
+            }
+            .param-block:nth-child(2) {
+                padding-left: 15px;
+                padding-right: 16px;
+                border-width: 0px 1px;
+                border-style: solid solid;
+                border-color: rgb(230, 230, 230) rgb(230, 230, 230);
+                border-image: initial;
+                border-top: 0px;
+                border-bottom: 0px;
+                .dealer:nth-child(1) {
+                    line-height: 22px;
+                    font-size: 16px;
+                    color: rgb(102, 102, 102);
+                }
+                .dealer:nth-child(2) {
+                    margin-top: 13px;
+                }
+            }
+            .param-block:nth-child(3) {
+                padding-left: 16px;
+                    .dealer:nth-child(1) {
+                    line-height: 22px;
+                    font-size: 16px;
+                    color: rgb(102, 102, 102);
+                }
+                .dealer:nth-child(2) {
+                    margin-top: 10px;
+                }
+            }
         }
-      }
-      .param-block:nth-child(1) {
-        padding-right: 16px;
-        .dealer:nth-child(1) {
-          line-height: 33px;
-          margin-top: -7px;
-          margin-bottom: 7px;
-        }
-        .price-text {
-          font-size: 24px;
-          font-weight: 500;
-          vertical-align: middle;
-          color: rgb(255, 145, 0);
-        }
-        .vendor {
-          line-height: 22px;
-          font-size: 16px;
-          color: rgb(102, 102, 102);
-        }
-        .vendor-text {
-          color: rgb(26, 26, 26);
-        }
-      }
-      .param-block:nth-child(2) {
-        padding-left: 15px;
-        padding-right: 16px;
-        border-width: 0px 1px;
-        border-style: solid solid;
-        border-color: rgb(230, 230, 230) rgb(230, 230, 230);
-        border-image: initial;
-        border-top: 0px;
-        border-bottom: 0px;
-        .dealer:nth-child(1) {
-          line-height: 22px;
-          font-size: 16px;
-          color: rgb(102, 102, 102);
-        }
-        .dealer:nth-child(2) {
-          margin-top: 13px;
-        }
-      }
-      .param-block:nth-child(3) {
-        padding-left: 16px;
-        .dealer:nth-child(1) {
-          line-height: 22px;
-          font-size: 16px;
-          color: rgb(102, 102, 102);
-        }
-        .dealer:nth-child(2) {
-          margin-top: 10px;
-        }
-      }
     }
-  }
 
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-  .clearfix:after {
-    clear: both
-  }
 }
 </style>

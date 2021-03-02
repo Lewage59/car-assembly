@@ -120,7 +120,6 @@ export default {
     },
     toDetailLink(row) {
       setSession('car_model_info', row)
-
       this.$router.push({
         name: 'carDetail',
         params: {

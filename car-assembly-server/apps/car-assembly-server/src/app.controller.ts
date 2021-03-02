@@ -1,6 +1,6 @@
 import { AuthService } from '@app/auth';
 import { LocalAuthGuard } from '@app/auth/guard/local-auth.guard';
-import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { EmailService } from 'libs/email';
 import { AppService } from './app.service';
 
@@ -17,9 +17,8 @@ export class AppController {
         return this.authService.login(req.user);
     }
 
-    @Get('email')
-    sendEmail(): string {
-      this.emailService.sendEmail();
-      return 'ok';
+    @Post('auth/sendEmail')
+    async sendEmail(@Body() body: any) {
+      return await this.emailService.sendEmail(body);
     }
 }
