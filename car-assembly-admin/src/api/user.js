@@ -66,5 +66,11 @@ export function deleteUser(id) {
   })
 }
 
-// 上传用户头像
+// 获取用户性别比例
+export function getSexNum() {
+  return request({
+    url: '/user/findSexNum',
+    method: 'get'
+  })
+}
 

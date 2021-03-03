@@ -1,6 +1,6 @@
 export default {
     pageTitle: 'Nest.js Monitoring Page',
-    port: 3000,
+    port: +process.env.STATUS_MONITOR_PORT,
     path: '/status-monitor',
     ignoreStartsWith: '/health/alive',
     spans: [

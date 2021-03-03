@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <panel-group v-if="penalNum" :value="penalNum" @handleSetLineChartData="handleSetLineChartData" />
+    <panel-group v-if="penalNum" :value="penalNum" />
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <bar-chart :data="levelNum" />
@@ -26,6 +26,11 @@
 
     <el-row :gutter="8">
       <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
+        <div class="chart-wrapper">
+          <pie-chart v-if="sexNum.length" :data="sexNum" />
+        </div>
+      </el-col>
+      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
         <rank-table />
       </el-col>
     </el-row>
@@ -35,46 +40,28 @@
 <script>
 import PanelGroup from './components/PanelGroup'
 // import RaddarChart from './components/RaddarChart'
-// import PieChart from './components/PieChart'
+import PieChart from './components/PieChart'
 import BarChart from './components/BarChart'
 import RankTable from './components/RankTable'
 
 import { getPanelNum, getLevelNum } from '@/api/home'
+import { getSexNum } from '@/api/user'
 import { CODE_OK } from '@/config'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
 
 export default {
   name: 'DashboardAdmin',
   components: {
     PanelGroup,
     // RaddarChart,
-    // PieChart,
+    PieChart,
     BarChart,
     RankTable
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis,
       penalNum: null,
-      levelNum: []
+      levelNum: [],
+      sexNum: []
     }
   },
   created() {
@@ -84,9 +71,7 @@ export default {
     initData() {
       this.getPanelNum()
       this.getLevelNum()
-    },
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+      this.getSexNum()
     },
     getPanelNum() {
       getPanelNum().then((res) => {
@@ -100,6 +85,13 @@ export default {
         if (res.code === CODE_OK) {
           this.levelNum = res.data
           this.levelNum.splice(0, 2)
+        }
+      })
+    },
+    getSexNum() {
+      getSexNum().then((res) => {
+        if (res.code === CODE_OK) {
+          this.sexNum = res.data
         }
       })
     }

@@ -21,6 +21,10 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    data: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -52,24 +56,22 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: ['未知', '男性', '女性']
         },
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '用户性别分布比例',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
-            center: ['50%', '38%'],
+            center: ['50%', '50%'],
             data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
+              { value: this.data[0].nums, name: '未知' },
+              { value: this.data[1].nums, name: '男性' },
+              { value: (this.data[2] && this.data[2].nums) || 0, name: '女性' }
             ],
             animationEasing: 'cubicInOut',
-            animationDuration: 2600
+            animationDuration: 1000
           }
         ]
       })

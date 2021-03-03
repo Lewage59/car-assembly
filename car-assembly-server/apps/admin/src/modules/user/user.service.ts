@@ -53,4 +53,15 @@ export class UserService {
         }
         return '删除成功'; 
     }
+
+    async findSexNum(): Promise<object> {
+        let result;
+        try {
+            result = await this.userRepository.query('SELECT sex, COUNT(*) as nums from user_info GROUP BY sex');
+        } catch (err) {
+            this.logger.warn(err);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
 }

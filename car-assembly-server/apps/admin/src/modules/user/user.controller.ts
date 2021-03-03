@@ -55,4 +55,11 @@ export class UserController {
         console.log(file);
         return true;
     }
+
+    // 获取用户性别数据信息
+    @Get('findSexNum')
+    async findSexNum() {
+        return await this.userService.findSexNum();
+    }
+    
 }

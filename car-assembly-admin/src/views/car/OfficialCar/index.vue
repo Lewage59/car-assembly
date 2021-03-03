@@ -139,13 +139,13 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['ID', '品牌', '车系', '车型', '销售状态', '年代款', '厂商指导价(元)', '级别']
+        const filterVal = ['id', 'brand.brandName', 'series.seriesName', 'modelName', 'salesStatus', 'period', 'basicParam.guidePrice', 'basicParam.level']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename: '官方汽车列表信息'
         })
         this.downloadLoading = false
       })
