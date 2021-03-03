@@ -143,31 +143,32 @@ export class CarService {
     }
 
     async findCarParam(param: any): Promise<object> {
-        const { modelId, paramType } = param;
+        const { modelId, paramType, isCustom } = param;
         let paramResult;
 
         try {
+            const query = isCustom ? { id: modelId } : { modelId: modelId };
             switch (paramType) {
                 case 'basicParam':
-                    paramResult = await this.basicParamRepository.findOne({ modelId: modelId });
+                    paramResult = await this.basicParamRepository.findOne(query);
                     break;
                 case 'chassis':
-                    paramResult = await this.chassisRepository.findOne({ modelId: modelId });
+                    paramResult = await this.chassisRepository.findOne(query);
                     break;
                 case 'engine':
-                    paramResult = await this.engineRepository.findOne({ modelId: modelId });
+                    paramResult = await this.engineRepository.findOne(query);
                     break;
                 case 'gearbox':
-                    paramResult = await this.gearboxRepository.findOne({ modelId: modelId });
+                    paramResult = await this.gearboxRepository.findOne(query);
                     break;
                 case 'inconfig':
-                    paramResult = await this.inconfigRepository.findOne({ modelId: modelId });
+                    paramResult = await this.inconfigRepository.findOne(query);
                     break;
                 case 'safety':
-                    paramResult = await this.safetyRepository.findOne({ modelId: modelId });
+                    paramResult = await this.safetyRepository.findOne(query);
                     break;
                 case 'wheel':
-                    paramResult = await this.wheelRepository.findOne({ modelId: modelId });
+                    paramResult = await this.wheelRepository.findOne(query);
                     break;
                 default:
                     break;

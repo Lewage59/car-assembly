@@ -2,7 +2,7 @@
     <ul class="cartype-list">
         <li 
             class="cartype-item" 
-            @click="toLink" v-for="(item, index) in list" 
+            @click="toLink(index)" v-for="(item, index) in list" 
             :key="index" 
             :style="{'background-position-x': item + 'px'}"></li>
     </ul>
@@ -31,8 +31,13 @@ export default {
                 position -= 149;
             }
         },
-        toLink() {
-            console.log(1);
+        toLink(index) {
+            this.$router.push({
+                name: 'carModelLibLevel',
+                params: {
+                    level: index + 1
+                }
+            });
         }
     }
 };

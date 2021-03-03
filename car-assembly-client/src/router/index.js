@@ -40,6 +40,13 @@ export const constantRoutes = [
             meta: {
                 title: '车型库'
             }
+        }, {
+            path: 'index/:level(\\d+)',
+            name: 'carModelLibLevel',
+            component: ()=> import('@/views/car-model-lib/index'),
+            meta: {
+                title: '车型库'
+            }
         }]
     },
 

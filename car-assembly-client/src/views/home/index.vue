@@ -5,17 +5,47 @@
                 <cartype-list></cartype-list>
             </div>
             <div class="search-wrapper">
-                <el-form :inline="true" :model="formInline" class="search-form-inline">
+                <el-form :inline="true" :model="formSearch" class="search-form-inline">
                     <el-form-item>
-                        <el-select v-model="formInline.region" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                        <el-select 
+                            v-model="formSearch.brandId" 
+                            placeholder="请选择品牌" 
+                            @visible-change="handleClickBrand" 
+                            :loading="brandLoading">
+                            <template v-if="brandList">
+                                <el-option-group
+                                    v-for="letter in letters"
+                                    :key="letter"
+                                    :label="letter">
+                                    <el-option
+                                        v-for="item in brandList[letter]"
+                                        :key="item.id"
+                                        :label="item.brandName"
+                                        :value="item.id">
+                                    </el-option>
+                                </el-option-group>
+                            </template>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-select v-model="formInline.region" disabled placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                        <el-select 
+                            v-model="formSearch.seriesId" 
+                            :disabled="!formSearch.brandId" 
+                            placeholder="请选择车系" 
+                            @visible-change="handleClickSeries" 
+                            :loading="SeriesLoading">
+                            <template v-if="seriesList">
+                                <el-option-group
+                                    v-for="vendor in Object.keys(seriesList)"
+                                    :key="vendor"
+                                    :label="vendor">
+                                    <el-option 
+                                        v-for="item in seriesList[vendor]" 
+                                        :key="item.seriesId" 
+                                        :label="item.series.seriesName" 
+                                        :value="item.seriesId"></el-option>
+                                </el-option-group>
+                            </template>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
@@ -49,30 +79,41 @@
         <el-row :gutter="24">
             <el-col></el-col>
         </el-row>
+        <series-dialog ref="seriesDialog"></series-dialog>
     </div>
 </template>
 
 <script>
 import CartypeList from './components/CartypeList';
+import {letter, CODE_OK, carType} from '@/config';
+import {getBrandList} from '@/api/brand';
+import {getCarModelList} from '@/api/car';
+import SeriesDialog from '@/views/car-model-lib/components/SeriesDialog';
 
 export default {
     name: 'Home',
     data() {
         return {
+            letters: letter,
+            brandList: null,
+            seriesList: null,
             carouselImgs: [
                 require('@/assets/carousel/carousel-img1.jpg'),
                 require('@/assets/carousel/carousel-img2.jpg'),
                 require('@/assets/carousel/carousel-img3.jpg'),
                 require('@/assets/carousel/carousel-img4.jpg')
             ],
-            formInline: {
-                user: '',
-                region: ''
-            }
+            formSearch: {
+                brandId: '',
+                seriesId: null
+            },
+            brandLoading: false,
+            SeriesLoading: false
         };
     },
     components: {
-        CartypeList
+        CartypeList,
+        SeriesDialog
     },
     methods: {
         toCarAssembly() {
@@ -80,8 +121,71 @@ export default {
                 path: '/car-assembly'
             });
         },
+        getBrandList() {
+            this.brandLoading = true;
+            getBrandList().then(res=> {
+                if (res.code === CODE_OK) {
+                    this.brandList = this.formatBrandList(res.data.list);
+                }
+            }).finally(()=> {
+                this.brandLoading = false;
+            });
+        },
+        getCarModelList() {
+            const param = {
+                currPage: 1,
+                pageSize: 200,
+                brandId: this.formSearch.brandId
+            };
+
+            this.SeriesLoading = true;
+            getCarModelList(param).then(res=> {
+                if (res.code === CODE_OK) {
+                    this.seriesList = this.formatSeriesList(res.data.list);
+                }
+            }).finally(()=> {
+                this.SeriesLoading = false;
+            });
+        },
+        formatBrandList(list) {
+            const formatList = {};
+
+            list.forEach(item=> {
+                if (typeof formatList[item.preLetter] === 'undefined') {
+                    formatList[item.preLetter] = [];
+                }
+                formatList[item.preLetter].push(item);
+            });
+
+            return formatList;
+        },
+        formatSeriesList(list) {
+            const formatList = {};
+
+            list.forEach(item=> {
+                if (typeof formatList[item.basicParam.vendor] === 'undefined') {
+                    formatList[item.basicParam.vendor] = [];
+                }
+                formatList[item.basicParam.vendor].push(item);
+            });
+
+            return formatList;
+        },
+        handleClickBrand() {
+            if (this.brandList) {
+                this.seriesList = null;
+                return;
+            }
+            this.getBrandList();
+        },
+        handleClickSeries() {
+            if (this.seriesList) {
+                return;
+            }
+            this.getCarModelList();
+        },
         onSearch() {
-            
+            this.$refs.seriesDialog.showDialog(this.formSearch.seriesId);
         }
     }
 };

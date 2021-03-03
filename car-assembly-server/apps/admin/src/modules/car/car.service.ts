@@ -125,4 +125,13 @@ export class CarService {
         };
     }
     
+    async findLevelNum(): Promise<object>{
+        const result = await this.basicParamRepository.query('SELECT level, count(*) AS nums FROM basic_param group by level');
+        return result;
+    }
+
+    async findVendorRank(): Promise<object> {
+        const result = await this.basicParamRepository.query('SELECT vendor, count(*) AS nums FROM basic_param group by vendor ORDER BY nums DESC LIMIT 12');
+        return result;
+    }
 }

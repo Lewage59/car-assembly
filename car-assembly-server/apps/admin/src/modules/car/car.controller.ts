@@ -31,4 +31,20 @@ export class CarController {
         const result = await this.carService.findAllCustom(query);
         return result;
     }
+
+    // 获取不同车型数据统计
+    @UseGuards(AuthGuard('jwt'))
+    @Get('findLevelNum')
+    async findLevelNum() {
+        const result = await this.carService.findLevelNum();
+        return result;
+    }
+    
+    // 获取品牌厂商车辆排行榜
+    @UseGuards(AuthGuard('jwt'))
+    @Get('findVendorRank')
+    async findVendorRank() {
+        const result = await this.carService.findVendorRank();
+        return result;
+    }
 }

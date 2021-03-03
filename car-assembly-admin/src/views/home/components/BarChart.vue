@@ -7,7 +7,7 @@ import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 
-const animationDuration = 6000
+const animationDuration = 3000
 
 export default {
   mixins: [resize],
@@ -23,11 +23,23 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    data: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    data: {
+      deep: true,
+      handler() {
+        this.initChart()
+      }
     }
   },
   mounted() {
@@ -62,7 +74,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: this.getXaxisData(this.data),
           axisTick: {
             alignWithLabel: true
           }
@@ -74,28 +86,27 @@ export default {
           }
         }],
         series: [{
-          name: 'pageA',
+          name: '车型数量',
           type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageB',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
+          barWidth: '50%',
+          data: this.getSeriesData(this.data),
           animationDuration
         }]
       })
+    },
+    getXaxisData(data) {
+      const res = []
+      data.forEach((item) => {
+        res.push(item.level)
+      })
+      return res
+    },
+    getSeriesData(data) {
+      const res = []
+      data.forEach((item) => {
+        res.push(item.nums)
+      })
+      return res
     }
   }
 }

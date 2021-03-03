@@ -48,7 +48,7 @@ export default {
     },
     methods: {
         handleSelected(index) {
-            this.currSelectIndexs[0] = index;
+            this.currSelectIndexs.splice(0, 1, Number(index));
             this.$emit('selected', this.currSelectIndexs);
         },
         resetSelected() {

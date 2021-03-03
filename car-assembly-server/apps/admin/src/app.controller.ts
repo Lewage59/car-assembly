@@ -4,6 +4,7 @@ import {
     HttpException, 
     HttpStatus, 
     Post, 
+    Query, 
     Request, 
     UseGuards 
 } from '@nestjs/common';
@@ -23,5 +24,12 @@ export class AppController {
     @Post('auth/login')
     async login(@Request() req) {
         return this.authService.login(req.user);
+    }
+    
+    // 查询后台数据统计
+    @UseGuards(AuthGuard('jwt'))
+    @Get('findPanelNum')
+    async findPanelNum() {
+        return await this.appService.findPanelNum();
     }
 }

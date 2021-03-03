@@ -1,9 +1,9 @@
 <template>
     <el-dialog title="全部车型" v-model="visible" :width="960" top="5%">
-        <el-row :gutter="24" class="series-header">
-            <el-col :span="5">{{seriesInfo.series.seriesName}}</el-col>
-            <el-col :span="8">{{seriesInfo.basicParam.vendor}}</el-col>
-            <el-col :span="8">{{seriesInfo.basicParam.level}}</el-col>
+        <el-row :gutter="24" class="series-header" v-if="seriesList.length">
+            <el-col :span="5">{{seriesList[0].series.seriesName}}</el-col>
+            <el-col :span="8">{{seriesList[0].basicParam.vendor}}</el-col>
+            <el-col :span="8">{{seriesList[0].basicParam.level}}</el-col>
         </el-row>
         <el-table :data="seriesList" :height="400" stripe v-loading="loading">
             <el-table-column property="modelName" label="车型名称"></el-table-column>
@@ -40,7 +40,7 @@ export default {
             visible: false,
             seriesList: [],
             loading: false,
-            seriesInfo: null,
+            seriesId: null,
             total: 0,
             currPage: 1,
             pageSize: 10
@@ -57,14 +57,14 @@ export default {
                 }
             });
         },
-        showDialog(series) {
+        showDialog(id) {
             this.visible = true;
-            this.seriesInfo = series;
+            this.seriesId = id;
             this.getCarSeriesList();
         },
         getCarSeriesList() {
             const param = {
-                seriesId: this.seriesInfo.seriesId,
+                seriesId: this.seriesId,
                 currPage: this.currPage,
                 pageSize: this.pageSize
             };

@@ -97,6 +97,8 @@ export default {
     },
     created() {
         this.computedPageHeight();
+    },
+    mounted() {
         this.initData();
     },
     computed: {
@@ -106,8 +108,15 @@ export default {
     },
     methods: {
         initData() {
+            const level = this.$route.params.level;
+
             this.getBrandList();
-            this.getCarModelList();
+
+            if (level) {
+                this.$refs.selectGroup.handleSelected(level);
+            } else {
+                this.getCarModelList();
+            }
         },
         computedPageHeight() {
             this.pageHeight = window.innerHeight + 'px';
@@ -198,7 +207,7 @@ export default {
             this.currPage = 1;
         },
         showSeriesDialog(item) {
-            this.$refs.seriesDialog.showDialog(item);
+            this.$refs.seriesDialog.showDialog(item.seriesId);
         },
         formatPriceText(value) {
             if (value === '-' || !value) {

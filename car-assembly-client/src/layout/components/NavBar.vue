@@ -73,6 +73,11 @@ export default {
             });
             window.location.replace('/');
         }
+    },
+    watch: {
+        '$route'(to, from) {
+            this.activeIndex = '/' + to.path.split('/')[1];
+        }
     }
 };
 </script>
