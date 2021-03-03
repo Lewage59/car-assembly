@@ -16,6 +16,6 @@ async function bootstrap() {
     // 全局注册拦截器
     app.useGlobalInterceptors(new TransformInterceptor());
     
-    await app.listen(3000);
+    await app.listen(process.env.SERVER_PORT);
 }
 bootstrap();

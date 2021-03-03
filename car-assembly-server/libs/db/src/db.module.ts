@@ -33,28 +33,32 @@ const entities = TypeOrmModule.forFeature([
 @Global()
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: '82580',
-            database: 'car_assembly',
-            entities: [
-                User,
-                Brand,
-                Series,
-                BasicParam,
-                CarModel,
-                Chassis,
-                Custom,
-                Engine,
-                Gearbox,
-                Inconfig,
-                Safety,
-                Wheel
-            ],
-            charset: "utf8mb4" // 设置chatset编码为utf8mb4
+        TypeOrmModule.forRootAsync({
+            useFactory() {
+                return {
+                    type: 'mysql',
+                    host: process.env.DB,
+                    port: 3306,
+                    username: 'root',
+                    password: '82580',
+                    database: 'car_assembly',
+                    entities: [
+                        User,
+                        Brand,
+                        Series,
+                        BasicParam,
+                        CarModel,
+                        Chassis,
+                        Custom,
+                        Engine,
+                        Gearbox,
+                        Inconfig,
+                        Safety,
+                        Wheel
+                    ],
+                    charset: "utf8mb4" // 设置chatset编码为utf8mb4
+                };
+            }
         }),
         entities
     ],

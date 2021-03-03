@@ -11,9 +11,11 @@ import { StatusMonitorModule } from 'nest-status-monitor';
 import statusMonitorConfig from './config/status-monitor';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { MulterModule } from '@nestjs/platform-express';
+import { CommonModule } from '@app/common';
 
 @Module({
     imports: [
+        CommonModule,
         MulterModule.register({
             dest: '/uploads'
         }),

@@ -12,9 +12,11 @@ import { CarModule } from './modules/car/car.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { BrandModule } from './modules/brand/brand.module';
 import { EmailModule } from 'libs/email';
+import { CommonModule } from '@app/common';
 
 @Module({
     imports: [
+        CommonModule,
         DbModule,
         AuthModule,
         LoggerModule,

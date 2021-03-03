@@ -24,6 +24,7 @@
   "dependencies": {
     "@nestjs-modules/mailer": "^1.5.1",
     "@nestjs/common": "^7.0.0",
+    "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.0.0",
     "@nestjs/jwt": "^7.2.0",
     "@nestjs/passport": "^7.1.5",
@@ -32,6 +33,7 @@
     "@nestjs/typeorm": "^7.1.5",
     "mysql": "^2.18.1",
     "nest-status-monitor": "^0.1.4",
+    "nestjs-redis": "^1.2.8",
     "nodemailer": "^6.5.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -95,7 +97,9 @@
       "@app/logger/(.*)": "<rootDir>/libs/logger/src/$1",
       "@app/logger": "<rootDir>/libs/logger/src",
       "libs/email/(.*)": "<rootDir>/libs/email/src/$1",
-      "libs/email": "<rootDir>/libs/email/src"
+      "libs/email": "<rootDir>/libs/email/src",
+      "@app/common/(.*)": "<rootDir>/libs/common/src/$1",
+      "@app/common": "<rootDir>/libs/common/src"
     }
   }
 }
