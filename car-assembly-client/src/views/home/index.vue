@@ -76,8 +76,38 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-row :gutter="24">
-            <el-col></el-col>
+        <el-row :gutter="24" class="row-wrapper">
+            <el-col :span="16">
+                <el-card class="hot-brand" shadow="never">
+                    <template #header>
+                        <div class="card-header">
+                            <span>热门品牌</span>
+                            <el-button class="button" type="text" @click="toLinkLib">更多品牌</el-button>
+                        </div>
+                    </template>
+                    <el-row :gutter="1">
+                        <el-col :span="6" v-for="o in 8" :key="o" class="brand-item">
+                            <img :src="brandImgs[o-1]">
+                            {{brandName[o-1]}}
+                        </el-col>
+                    </el-row>
+                </el-card>
+            </el-col>
+            <el-col :span="8">
+                <el-card class="new-card" shadow="never">
+                    <template #header>
+                        <div class="card-header">
+                            <span>最新发布</span>
+                        </div>
+                    </template>
+                    <div v-for="item in newCarList" :key="item.id" class="new-item">
+                        <div class="car-name">
+                            <span class="link" @click="toLinkDetail(item.seriesId)">{{item.period + ' ' + item.series.seriesName}}</span>
+                        </div>
+                        <span class="car-price">{{item.basicParam.guidePrice}}</span>
+                    </div>
+                </el-card>
+            </el-col>
         </el-row>
         <series-dialog ref="seriesDialog"></series-dialog>
     </div>
@@ -87,7 +117,7 @@
 import CartypeList from './components/CartypeList';
 import {letter, CODE_OK, carType} from '@/config';
 import {getBrandList} from '@/api/brand';
-import {getCarModelList} from '@/api/car';
+import {getCarModelList, getNewCarList} from '@/api/car';
 import SeriesDialog from '@/views/car-model-lib/components/SeriesDialog';
 
 export default {
@@ -97,12 +127,24 @@ export default {
             letters: letter,
             brandList: null,
             seriesList: null,
+            newCarList: null,
             carouselImgs: [
                 require('@/assets/carousel/carousel-img1.jpg'),
                 require('@/assets/carousel/carousel-img2.jpg'),
                 require('@/assets/carousel/carousel-img3.jpg'),
                 require('@/assets/carousel/carousel-img4.jpg')
             ],
+            brandImgs: [
+                require('@/assets/logo/brand1.png'),
+                require('@/assets/logo/brand2.png'),
+                require('@/assets/logo/brand3.png'),
+                require('@/assets/logo/brand4.png'),
+                require('@/assets/logo/brand5.png'),
+                require('@/assets/logo/brand6.png'),
+                require('@/assets/logo/brand7.png'),
+                require('@/assets/logo/brand8.png')
+            ],
+            brandName: ['奥迪', '奔驰', '宝马', '本田', '长城', '大众', '丰田', '福特'],
             formSearch: {
                 brandId: '',
                 seriesId: null
@@ -114,6 +156,9 @@ export default {
     components: {
         CartypeList,
         SeriesDialog
+    },
+    created() {
+        this.getNewCarList();
     },
     methods: {
         toCarAssembly() {
@@ -145,6 +190,15 @@ export default {
                 }
             }).finally(()=> {
                 this.SeriesLoading = false;
+            });
+        },
+        getNewCarList() {
+            getNewCarList().then(res=> {
+                if (res.code === CODE_OK) {
+                    this.newCarList = res.data.newList;
+                }
+            }).finally(()=> {
+                this.brandLoading = false;
             });
         },
         formatBrandList(list) {
@@ -186,6 +240,14 @@ export default {
         },
         onSearch() {
             this.$refs.seriesDialog.showDialog(this.formSearch.seriesId);
+        },
+        toLinkDetail(seriesId) {
+            this.$refs.seriesDialog.showDialog(seriesId);
+        },
+        toLinkLib() {
+            this.$router.push({
+                name: 'carModelLib'
+            });
         }
     }
 };
@@ -220,6 +282,52 @@ export default {
                 letter-spacing: 1px;
             }
         }
+    }
+    .row-wrapper {
+        margin-top: 20px;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+        }
+        .button {
+            padding: 0;
+            min-height: 0;
+        }
+        .new-item {
+            display: flex;
+            font-size: 14px;
+            line-height: 16px;
+            margin-bottom: 18px;
+            &:nth-last-child(1){
+                margin-bottom: 0;
+            }
+            .car-name {
+                flex: 1;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #606266;
+                .link {
+                    &:hover {
+                        color: #409EFF;
+                        cursor: pointer;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .car-price {
+                width: 70px;
+                margin-left: 10px;
+                color: #ff4444;
+            }
+        }
+    }
+    .brand-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
 </style>

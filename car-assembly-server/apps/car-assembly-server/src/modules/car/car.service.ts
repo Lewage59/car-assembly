@@ -284,4 +284,25 @@ export class CarService {
         }
         return '删除成功';
     }
+    
+    async findNewCarList(): Promise<object> {
+        let result;
+        try {
+            result = await this.carModelRepository
+                .createQueryBuilder('car_model_info')
+                .leftJoinAndSelect("car_model_info.series", "series")
+                .innerJoinAndSelect("car_model_info.basicParam", "basicParam")
+                .where("car_model_info.period = '2017款'")
+                .groupBy("car_model_info.seriesId")
+                .orderBy("car_model_info.period", "DESC")
+                .limit(10)
+                .getMany();
+        } catch (error) {
+            this.logger.error(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return {
+            newList: result
+        };
+    }
 }

@@ -57,3 +57,11 @@ export function saveCustomInfo(data) {
         data
     });
 }
+
+// 查询最新发布车辆
+export function getNewCarList() {
+    return request({
+        url: '/car/findNewCarList',
+        method: 'get'
+    });
+}

@@ -59,4 +59,10 @@ export class CarController {
         return await this.carService.deleteCustomInfo(body);
     }
 
+    // 查询最新发布车辆
+    @Get('findNewCarList')
+    async findNewCarList() {
+        return await this.carService.findNewCarList();
+    }
+
 }
