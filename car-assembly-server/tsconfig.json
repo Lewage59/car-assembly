@@ -42,6 +42,12 @@
       ],
       "@app/common/*": [
         "libs/common/src/*"
+      ],
+      "@app/cache": [
+        "libs/cache/src"
+      ],
+      "@app/cache/*": [
+        "libs/cache/src/*"
       ]
     }
   },

@@ -99,7 +99,9 @@
       "libs/email/(.*)": "<rootDir>/libs/email/src/$1",
       "libs/email": "<rootDir>/libs/email/src",
       "@app/common/(.*)": "<rootDir>/libs/common/src/$1",
-      "@app/common": "<rootDir>/libs/common/src"
+      "@app/common": "<rootDir>/libs/common/src",
+      "@app/cache/(.*)": "<rootDir>/libs/cache/src/$1",
+      "@app/cache": "<rootDir>/libs/cache/src"
     }
   }
 }

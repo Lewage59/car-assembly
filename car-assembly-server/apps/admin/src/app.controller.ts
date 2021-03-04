@@ -6,12 +6,15 @@ import {
     Post, 
     Query, 
     Request, 
-    UseGuards 
+    UploadedFile, 
+    UseGuards, 
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthService } from '@app/auth';
 import { LocalAuthGuard } from '@app/auth/guard/local-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('admin')
 export class AppController {
@@ -31,5 +34,13 @@ export class AppController {
     @Get('findPanelNum')
     async findPanelNum() {
         return await this.appService.findPanelNum();
+    }
+
+    // 文件上传
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadFile(@UploadedFile() file) {
+        console.log(file);
+        return true;
     }
 }

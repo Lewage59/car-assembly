@@ -13,6 +13,8 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { BrandModule } from './modules/brand/brand.module';
 import { EmailModule } from 'libs/email';
 import { CommonModule } from '@app/common';
+import { CacheModule } from '@app/cache';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
     imports: [
@@ -24,7 +26,10 @@ import { CommonModule } from '@app/common';
         UserModule,
         CarModule,
         BrandModule,
-        EmailModule
+        EmailModule,
+        MulterModule.register({
+            dest: '/uploads'
+        })
     ],
     controllers: [AppController, UserController],
     providers: [AppService],

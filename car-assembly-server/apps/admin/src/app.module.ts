@@ -16,16 +16,16 @@ import { CommonModule } from '@app/common';
 @Module({
     imports: [
         CommonModule,
-        MulterModule.register({
-            dest: '/uploads'
-        }),
         DbModule,
         AuthModule,
         LoggerModule,
         UserModule,
         CarModule,
         StatusMonitorModule.setUp(statusMonitorConfig),
-        BrandModule
+        BrandModule,
+        MulterModule.register({
+            dest: '/uploads'
+        })
     ],
     controllers: [AppController],
     providers: [AppService]

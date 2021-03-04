@@ -1,6 +1,5 @@
-import { Body, Controller, Request, Get, Post, UseGuards, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Request, Get, Post, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 
 @Controller('admin/user')
@@ -46,14 +45,6 @@ export class UserController {
     @Get('deleteUser')
     async deleteUser(@Query() query: any) {
         return await this.userService.deleteUser(query);
-    }
-
-    // 头像上传
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file) {
-        console.log(file);
-        return true;
     }
 
     // 获取用户性别数据信息
