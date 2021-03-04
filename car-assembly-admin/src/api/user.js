@@ -30,10 +30,11 @@ export function logout() {
 }
 
 // 获取所有用户列表
-export function getAllUserList() {
+export function getAllUserList(params) {
   return request({
     url: '/user/userList',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

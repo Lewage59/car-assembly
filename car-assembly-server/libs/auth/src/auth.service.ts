@@ -13,7 +13,7 @@ export class AuthService {
 
     async validateUser(username: string, pass: string): Promise<any> {
         const user = await this.userRepository.findOne({ username: username});
-        if (user && user.password === pass) {
+        if (user && user.password === pass && user.status) {
             const { password, ...result } = user;
             return result;
         }

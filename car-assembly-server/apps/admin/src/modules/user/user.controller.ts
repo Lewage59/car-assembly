@@ -27,8 +27,8 @@ export class UserController {
     // 获取所有用户列表
     @UseGuards(AuthGuard('jwt'))
     @Get('userList')
-    async findAllUser () {
-        const userList = await this.userService.findAllUser();
+    async findAllUser (@Query() query: any) {
+        const userList = await this.userService.findAllUser(query);
         return {
             userList
         };

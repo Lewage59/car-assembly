@@ -10,7 +10,7 @@ const userRole = {
 }
 
 const userStatus = {
-  0: '禁用',
+  2: '禁用',
   1: '启用'
 }
 

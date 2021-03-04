@@ -40,8 +40,26 @@ export class UserService {
         return '创建成功';
     }
 
-    async findAllUser() {
-        return await this.userRepository.find();
+    async findAllUser(param: any): Promise<object> {
+        let result;
+        let sql = 'SELECT * FROM user_info WHERE 1=1';
+        if (param.username) {
+            sql += ` AND username LIKE '%${param.username}%'`;
+        }
+        if (param.role) {
+            sql += ` AND role = ${param.role}`;
+        }
+        if (param.status) {
+            sql += ` AND status = ${param.status}`;
+        }
+
+        try {
+            result = await this.userRepository.query(sql);
+        } catch (error) {
+            this.logger.warn(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
     }
 
     async deleteUser(query) {

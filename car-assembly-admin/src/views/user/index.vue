@@ -7,10 +7,10 @@
       </div>
       <div class="right">
         <el-input v-model="listQuery.username" placeholder="查找用户名" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-        <el-select v-model="listQuery.role" placeholder="筛选用户角色" clearable style="width: 150px" class="filter-item">
+        <el-select v-model="listQuery.role" placeholder="筛选用户角色" clearable style="width: 150px" class="filter-item" @change="handleFilter">
           <el-option v-for="item in roleOptions" :key="item.label" :label="item.label" :value="item.value" />
         </el-select>
-        <el-select v-model="listQuery.status" placeholder="筛选用户状态" style="width: 150px" class="filter-item" @change="handleFilter">
+        <el-select v-model="listQuery.status" placeholder="筛选用户状态" clearable style="width: 150px" class="filter-item" @change="handleFilter">
           <el-option v-for="item in statusOptions" :key="item.label" :label="item.label" :value="item.value" />
         </el-select>
         <el-button v-waves type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column label="状态" align="center" min-width="100px">
         <template slot-scope="{row}">
-          <el-tag v-if="row.status === 0" type="info">{{ userStatus[row.status] }}</el-tag>
+          <el-tag v-if="row.status === 2" type="info">{{ userStatus[row.status] }}</el-tag>
           <el-tag v-if="row.status === 1">{{ userStatus[row.status] }}</el-tag>
         </template>
       </el-table-column>
@@ -200,7 +200,8 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getAllUserList().then(response => {
+      console.log(this.listQuery)
+      getAllUserList(this.listQuery).then(response => {
         this.userList = response.data.userList
 
         // Just to simulate the time of the request
@@ -279,7 +280,7 @@ export default {
       })
     },
     changeStatus(row) {
-      row.status ^= 1
+      row.status = row.status === 1 ? 2 : 1
       const param = {
         user_id: row.user_id,
         status: row.status
