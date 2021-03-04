@@ -28,7 +28,11 @@
       @sort-change="sortChange"
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
-      <el-table-column label="头像" prop="avatar" width="150px" align="center" />
+      <el-table-column label="头像" prop="avatar" width="150px" align="center">
+        <template>
+          <el-avatar icon="el-icon-user-solid" class="user-avatar" size="small" shape="square" />
+        </template>
+      </el-table-column>
       <el-table-column label="用户名" prop="username" width="150px" align="center" />
       <el-table-column label="邮箱" prop="email" width="150px" align="center" />
       <el-table-column label="电话" prop="tel" width="150px" align="center" />
@@ -66,7 +70,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="3%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 400px; margin-left:50px;">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="temp.username" placeholder="请输入用户名" />
@@ -79,6 +83,11 @@
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="temp.password" placeholder="请输入密码" />
+        </el-form-item>
+        <el-form-item label="性别" prop="role">
+          <el-select v-model="temp.sex" placeholder="选择用户性别">
+            <el-option v-for="item in sexOptions" :key="item.label" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="用户角色" prop="role">
           <el-select v-model="temp.role" placeholder="选择用户角色">
@@ -131,6 +140,21 @@ const statusOptions = [
   }
 ]
 
+const sexOptions = [
+  {
+    label: '未知',
+    value: 0
+  },
+  {
+    label: '男性',
+    value: 1
+  },
+  {
+    label: '女性',
+    value: 2
+  }
+]
+
 export default {
   name: 'UserManager',
   components: { Pagination },
@@ -154,6 +178,7 @@ export default {
       userStatus,
       roleOptions,
       statusOptions,
+      sexOptions,
       tableKey: 0,
       userList: null,
       total: 0,
@@ -168,11 +193,11 @@ export default {
       temp: {
         username: '',
         email: '',
-        avatar: '',
         tel: '',
         password: '',
         role: 1,
-        status: 1
+        status: 1,
+        sex: 0
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -239,11 +264,11 @@ export default {
       this.temp = {
         username: '',
         email: '',
-        avatar: '',
         tel: '',
         password: '',
         role: 1,
-        status: 1
+        status: 1,
+        sex: 0
       }
     },
     handleCreate() {

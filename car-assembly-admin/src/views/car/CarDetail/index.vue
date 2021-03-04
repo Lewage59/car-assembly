@@ -11,7 +11,7 @@
             <img class="car-image" src="@/assets/404_images/empty_car.png" alt="">
           </el-col>
           <el-col :span="16">
-            <h1 class="car-name">{{ carModelInfo.series.seriesName }}（{{ carModelInfo.modelName }}）</h1>
+            <h1 class="car-name">{{ carModelInfo.series ? carModelInfo.series.seriesName : '-' }}（{{ carModelInfo.modelName }}）</h1>
             <div class="param-wrapper">
               <div class="param-block">
                 <p class="dealer">厂商指导价：<span class="price-text">{{ carModelInfo.basicParam.guidePrice }}</span></p>
@@ -28,7 +28,7 @@
                     :type="carModelInfo.salesStatus === '停售' ? 'info' : 'success'"
                     size="medium"
                     effect="dark"
-                  >{{ carModelInfo.salesStatus }}</el-tag>
+                  >{{ carModelInfo.salesStatus || '-' }}</el-tag>
                 </p>
               </div>
             </div>
@@ -87,10 +87,15 @@ export default {
   methods: {
     getCarParam(paramType) {
       this.currParam = paramMap[paramType]
-      const param = {
-        modelId: this.modelId,
-        paramType: this.currParam
+      const temp = this.carModelInfo.userId ? {
+        modelId: this.carModelInfo[`${this.currParam}Id`],
+        isCustom: true
+      } : {
+        modelId: this.modelId
       }
+      const param = Object.assign({
+        paramType: this.currParam
+      }, temp)
 
       this.isLoading = true
       getCarParam(param).then(res => {

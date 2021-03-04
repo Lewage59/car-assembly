@@ -100,7 +100,7 @@ export const constantRoutes = [
         path: 'carDetail/:id(\\d+)',
         name: 'carDetail',
         component: () => import('@/views/car/CarDetail/index'),
-        meta: { title: '汽车详情', noCache: true, activeMenu: '/carManage/officialCar' },
+        meta: { title: '汽车详情', noCache: true },
         hidden: true
       }
     ]

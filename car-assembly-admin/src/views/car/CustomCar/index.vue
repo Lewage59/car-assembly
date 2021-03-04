@@ -27,16 +27,11 @@
       style="width: 100%;"
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" />
-      <el-table-column label="品牌" prop="brand.brandName" width="150px" align="center" />
-      <el-table-column label="车系" prop="series.seriesName" width="150px" align="center" />
       <el-table-column label="车型" prop="modelName" align="center" />
-      <el-table-column label="销售状态" prop="salesStatus" width="100px" align="center">
-        <template slot-scope="{row}">
-          <el-tag :type="row.salesStatus === '停售' ? 'info' : 'success'" size="medium">{{ row.salesStatus }}</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column label="车体结构" prop="basicParam.bodyStructure" align="center" />
+      <el-table-column label="发动机" prop="basicParam.engine" align="center" />
       <el-table-column label="年代款" prop="period" width="100px" align="center" />
-      <el-table-column label="厂商指导价(元)" prop="basicParam.guidePrice" width="150px" align="center" />
+      <el-table-column label="变速箱" prop="basicParam.gearbox" width="150px" align="center" />
       <el-table-column label="级别" prop="basicParam.level" width="150px" align="center" />
       <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
