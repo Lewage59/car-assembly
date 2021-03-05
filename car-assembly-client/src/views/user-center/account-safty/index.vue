@@ -28,6 +28,30 @@
                 </span>
             </template>
         </el-dialog>
+        <el-dialog title="绑定邮箱" v-model="dialogEmailVisible" width="460px" destroy-on-close>
+            <el-form :model="passwordForm" ref="passwordForm" status-icon :rules="passwordRules">
+                <el-form-item label="邮箱" :label-width="formLabelWidth" prop="oldPassword">
+                    <el-input type="password" v-model="passwordForm.oldPassword" show-password></el-input>
+                </el-form-item>
+                <el-form-item label="验证码" :label-width="formLabelWidth" prop="newPassword">
+                    <div class="valite-wrapper">
+                        <el-input 
+                            type="password" 
+                            v-model="passwordForm.newPassword" 
+                            show-password 
+                            autocomplete="off" 
+                            class="send-input"></el-input>
+                        <el-button type="primary">发送</el-button>
+                    </div>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submitPassForm('passwordForm')">确 定</el-button>
+                </span>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -87,7 +111,8 @@ export default {
                 checkPassword: ''
             },
             dialogFormVisible: false,
-            formLabelWidth: '100px',
+            dialogEmailVisible: false,
+            formLabelWidth: '80px',
             passwordRules: {
                 newPassword: [
                     {
@@ -114,6 +139,8 @@ export default {
         handleClick(row) {
             if (row.type === '设置密码') {
                 this.dialogFormVisible = true;
+            } else if (row.type === '绑定邮箱') {
+                this.dialogEmailVisible = true;
             }
         },
         submitPassForm(formName) {
@@ -147,5 +174,11 @@ export default {
 <style lang="less" scoped>
 .account-safty {
     
+}
+.valite-wrapper {
+    display: flex;
+    .send-input {
+        margin-right: 10px;
+    }
 }
 </style>

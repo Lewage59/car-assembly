@@ -74,3 +74,12 @@ export function deleteCustomInfo(data) {
         data
     });
 }
+
+// 获取推荐车辆
+export function recommendCarlist(data) {
+    return request({
+        url: '/car/findRecommendCarList',
+        method: 'post',
+        data
+    });
+}

@@ -305,4 +305,39 @@ export class CarService {
             newList: result
         };
     }
+
+    async findRecommendCarList(query: any): Promise<object> {
+        let result;
+
+        try {
+            // result = await this.carModelRepository.query(`SELECT * from car_model_info 
+            //     where basic_param_id = ${query.basicParamId} 
+            //     OR gearbox_id = ${query.gearboxId} 
+            //     OR chassis_id = ${query.chassisId} 
+            //     OR wheel_id = ${query.wheelId} 
+            //     OR safety_id = ${query.safetyId} 
+            //     OR engine_id = ${query.engineId}  
+            //     OR inconfig_id = ${query.inconfigId} `);
+            result = await this.carModelRepository
+                .createQueryBuilder('car')
+                .leftJoinAndSelect("car.series", "series")
+                .leftJoinAndSelect("car.brand", "brand")
+                .leftJoinAndSelect("car.basicParam", "basicParam")
+                .where("car.basicParamId = :id1", { id1: query.basicParamId })
+                .orWhere("car.gearboxId = :id2", { id2: query.gearboxId })
+                .orWhere("car.chassisId = :id3", { id3: query.chassisId })
+                .orWhere("car.wheelId = :id4", { id4: query.wheelId })
+                .orWhere("car.safetyId = :id5", { id5: query.safetyId })
+                .orWhere("car.engineId = :id6", { id6: query.engineId })
+                .orWhere("car.inconfigId = :id7", { id7: query.inconfigId })
+                .limit(10)
+                .getMany();
+        } catch (error) {
+            this.logger.error(error);
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return {
+            list: result
+        };
+    }
 }

@@ -57,38 +57,32 @@ export class CarModel {
     basicParamId: number;
 
     @Column({
-        name: 'gearbox_id',
-        select: false 
+        name: 'gearbox_id'
     })
     gearboxId: number;
 
     @Column({
-        name: 'chassis_id',
-        select: false 
+        name: 'chassis_id'
     })
     chassisId: number;
 
     @Column({
-        name: 'wheel_id',
-        select: false 
+        name: 'wheel_id'
     })
     wheelId: number;
 
     @Column({
-        name: 'safety_id',
-        select: false 
+        name: 'safety_id'
     })
     safetyId: number;
 
     @Column({
-        name: 'engine_id',
-        select: false 
+        name: 'engine_id'
     })
     engineId: number;
     
     @Column({
-        name: 'inconfig_id',
-        select: false 
+        name: 'inconfig_id'
     })
     inconfigId: number;
 

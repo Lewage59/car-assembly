@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { query } from 'express';
 import { CarService } from './car.service';
 
 @Controller('car')
@@ -63,6 +64,12 @@ export class CarController {
     @Get('findNewCarList')
     async findNewCarList() {
         return await this.carService.findNewCarList();
+    }
+
+    // 查询推荐车辆
+    @Post('findRecommendCarList')
+    async findRecommendCarList(@Body() body: any) {
+        return await this.carService.findRecommendCarList(body);
     }
 
 }

@@ -42,12 +42,31 @@
                 <column-table :value="paramValue" :curr-param="currParam" />
             </el-tab-pane>
         </el-tabs>
+        <template v-if="carModelInfo.userId">
+            <h2 class="page-title">官方推荐</h2>
+            <el-divider></el-divider>
+            <el-row 
+                :gutter="1" 
+                type="flex" 
+                justify="start" 
+                align="top">
+                <el-col :span="6" v-for="(item) in recommendList" :key="item">
+                    <el-card :body-style="{ padding: '0px' }"  shadow="hover" class="car-model-card" @click="toDetailLink(item)">
+                        <img src="@/assets/404_images/empty_car.png" class="car-image" />
+                        <div class="car-content">
+                            <span class="main">{{item.series.seriesName}}</span>
+                            <div class="bottom">{{formatPriceText(item.basicParam.guidePrice)}}</div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </template>
     </div>
 </template>
 
 <script>
-import {getSession} from '@/utils/session_stroage';
-import {getCarParam} from '@/api/car';
+import {getSession, setSession} from '@/utils/session_stroage';
+import {getCarParam, recommendCarlist} from '@/api/car';
 import ColumnTable from './components/ColumnTable';
 import {CODE_OK} from '@/config/index';
 
@@ -72,7 +91,8 @@ export default {
             carModelInfo: null,
             paramValue: null,
             isLoading: false,
-            currParam: 'basicParam'
+            currParam: 'basicParam',
+            recommendList: null
         };
     },
     computed: {
@@ -84,6 +104,7 @@ export default {
         this.modelId = this.$route.params && this.$route.params.id;
         this.carModelInfo = getSession('car_model_info');
         this.getCarParam('基本参数');
+        this.carModelInfo.userId && this.getRecommendList();
     },
     methods: {
         getCarParam(paramType) {
@@ -107,13 +128,37 @@ export default {
                 this.isLoading = false;
             });
         },
+        getRecommendList() {
+            recommendCarlist(this.carModelInfo).then(res=> {
+                if (res.code === CODE_OK) {
+                    this.recommendList = res.data.list;
+                }
+            });
+        },
         handleTabClick(tab) {
             const tabName = Object.keys(paramMap)[tab.index];
 
             this.getCarParam(tabName);
         },
         goBack() {
-            this.$router.back();
+            this.$router.push({
+                name: 'carModelLib'
+            });
+        },
+        formatPriceText(value) {
+            if (value === '-' || !value) {
+                return '暂无报价';
+            }
+            return value + '左右';
+        },
+        toDetailLink(item) {
+            setSession('car_model_info', item);
+            this.$router.push({
+                name: 'carModelDetail',
+                params: {
+                    id: item.id
+                }
+            });
         }
     }
 };
@@ -198,6 +243,36 @@ export default {
             }
         }
     }
-
+    .page-title {
+        margin: 25px 0;
+        color: #303133;
+        font-size: 20px;
+        font-weight: 500;
+    }
+    .car-model-card {
+        margin: 10px;
+        cursor: pointer;
+        .car-image {
+            width: 100%;
+        }
+        .car-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            .main {
+                line-height: 22px;
+                font-size: 16px;
+                margin-bottom: 4px;
+            }
+            .bottom {
+                display: inline-block;
+                height: 20px;
+                line-height: 20px;
+                color: rgb(255, 145, 0);
+            }
+        }
+    }
 }
 </style>
