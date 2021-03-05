@@ -27,5 +27,12 @@ export class UserController {
     async createUser(@Body() body: any) {
         return await this.userService.createUser(body);
     }
+
+    // 修改用户密码
+    @UseGuards(AuthGuard('jwt'))
+    @Post('updatePassword')
+    async updatePassword(@Body() body: any) {
+        return await this.userService.updatePassword(body);
+    }
     
 }

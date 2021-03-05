@@ -39,5 +39,11 @@ export function updateUserInfo(data) {
     });
 }
 
-// 上传用户头像
-
+// 修改用户密码
+export function updatePass(data) {
+    return request({
+        url: '/user/updatePassword',
+        method: 'post',
+        data
+    });
+}

@@ -51,4 +51,22 @@ export class UserService {
         }
         return '创建成功';
     }
+
+    async updatePassword(param: any): Promise<string> {
+        const { user_id, oldPassword, ...update } = param;
+        update.update_time = +new Date();
+
+        const userInfo = await this.userRepository.findOne({ where: { user_id } });
+
+        if (userInfo.password === oldPassword) {
+            await this.userRepository.update({ user_id }, update);
+        } else {
+            throw new HttpException({
+                code: 4002,
+                message: '修改失败'
+            }, HttpStatus.BAD_REQUEST);
+        }
+        
+        return '修改成功';
+    }
 }

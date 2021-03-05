@@ -2,7 +2,7 @@
     <div class="navbar">
         <el-menu :default-active="activeIndex" class="el-menu-navbar" mode="horizontal" @select="handleSelect" router>
             <div class="logo-wrapper">
-                <img src="@/assets/logo/nav-logo.jpg" class="logo-image">
+                <img src="@/assets/logo/logo.png" class="logo-image">
                 <span>汽车组装演示系统</span>
             </div>
             <el-menu-item index="/home">首页</el-menu-item>
@@ -98,8 +98,9 @@ export default {
         color: #303133;
         font-weight: bold;
         .logo-image {
-            height: 50px;
-            margin-top: 8px;
+            height: 36px;
+            margin-top: 10px;
+            margin-right: 8px;
             vertical-align: top;
         }
     }

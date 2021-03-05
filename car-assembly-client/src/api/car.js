@@ -65,3 +65,12 @@ export function getNewCarList() {
         method: 'get'
     });
 }
+
+// 删除用户组装车辆信息
+export function deleteCustomInfo(data) {
+    return request({
+        url: '/car/deleteCustomInfo',
+        method: 'post',
+        data
+    });
+}

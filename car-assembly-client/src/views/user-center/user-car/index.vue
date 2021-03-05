@@ -13,7 +13,7 @@
             <el-table-column fixed="right" label="操作" width="100">
             <template #default="scope">
                 <el-button @click="handleClick(scope.row)" type="text" size="medium">查看</el-button>
-                <!-- <el-button type="text" size="medium">编辑</el-button> -->
+                <el-button type="text" size="medium" @click="handleDelete(scope.row, scope.$index)">删除</el-button>
             </template>
             </el-table-column>
         </el-table>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {getCustomList} from '@/api/car';
+import {getCustomList, deleteCustomInfo} from '@/api/car';
 import {mapGetters} from 'vuex';
 import {CODE_OK} from '@/config';
 import {setSession} from '@/utils/session_stroage';
@@ -64,6 +64,35 @@ export default {
                 params: {
                     id: item.id
                 }
+            });
+        },
+        handleDelete(row, index) {
+            this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(()=> {
+                this.deleteCustom(row.id, index);
+            });
+        },
+        deleteCustom(id, index) {
+            const param = {
+                customId: id
+            };
+
+            deleteCustomInfo(param).then(res=> {
+                if (res.code === CODE_OK) {
+                    this.$message({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    this.customList.splice(index, 1);
+                }
+            }).catch(()=> {
+                this.$message({
+                    message: '删除失败',
+                    type: 'error'
+                });
             });
         }
     }

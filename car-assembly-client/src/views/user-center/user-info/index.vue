@@ -49,6 +49,7 @@
 
 <script>
 import {updateUserInfo} from '@/api/user';
+import {CODE_OK} from '@/config';
 
 export default {
     name: 'userInfo',
@@ -113,13 +114,18 @@ export default {
             this.$refs.userForm.validate(valid=> {
                 if (valid) {
                     this.loading = true;
-                    updateUserInfo(params).then(()=> {
-                        this.$message({
-                            message: '更新成功',
-                            type: 'success'
-                        });
-                        this.isEdit = false;
-                        this.loading = false;
+                    updateUserInfo(params).then(res=> {
+                        if (res.code === CODE_OK) {
+                            this.$message({
+                                message: '更新成功',
+                                type: 'success'
+                            });
+                            this.isEdit = false;
+                            this.loading = false;
+                            this.$store.dispatch('user/setUserInfo', {
+                                userInfo: this.formData
+                            });
+                        }
                     }).catch(()=> {
                         this.loading = false;
                     });

@@ -89,6 +89,14 @@ const actions = {
             commit('RESET_STATE');
             resolve();
         });
+    },
+
+    setUserInfo({commit}, {userInfo}) {
+        return new Promise(resolve=> {
+            commit('SET_USERINFO', userInfo);
+            commit('SET_NAME', userInfo.username);
+            resolve();
+        });
     }
 };
 

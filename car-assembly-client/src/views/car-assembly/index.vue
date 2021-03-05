@@ -6,64 +6,155 @@
                     <el-steps :active="activeSteps" align-center finish-status="success">
                         <el-step title="基本参数">
                             <template v-slot:description v-if="modelParts.basicParam">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.basicParam.level}}</p>
-                                    <p>{{modelParts.basicParam.bodyStructure}}</p>
-                                    <p>{{modelParts.basicParam.maxSpeed}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.basicParam.level}}</p>
+                                            <p>{{modelParts.basicParam.bodyStructure}}</p>
+                                            <p>{{modelParts.basicParam.maxSpeed}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['basicParam'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.basicParam, 'basicParam')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                         <el-step title="底盘转向">
                             <template v-slot:description v-if="modelParts.chassis">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.chassis.driveMethod}}</p>
-                                    <p>{{modelParts.chassis.assistType}}</p>
-                                    <p>{{modelParts.chassis.bodyStructure}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.chassis.driveMethod}}</p>
+                                            <p>{{modelParts.chassis.assistType}}</p>
+                                            <p>{{modelParts.chassis.bodyStructure}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['chassis'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.chassis, 'chassis')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                         <el-step title="变速箱">
                             <template v-slot:description v-if="modelParts.gearbox">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.gearbox.abbreviation}}</p>
-                                    <p>{{modelParts.gearbox.gearboxType}}</p>
-                                    <p>{{modelParts.gearbox.gearNum}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.gearbox.abbreviation}}</p>
+                                            <p>{{modelParts.gearbox.gearboxType}}</p>
+                                            <p>{{modelParts.gearbox.gearNum}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['gearbox'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.gearbox, 'gearbox')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                         <el-step title="内置配置">
                             <template v-slot:description v-if="modelParts.inconfig">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.inconfig.speakerBrand}}</p>
-                                    <p>{{modelParts.inconfig.speakerNum}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.inconfig.speakerBrand}}</p>
+                                            <p>{{modelParts.inconfig.speakerNum}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['inconfig'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.inconfig, 'inconfig')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                         <el-step title="安全装备">
                             <template v-slot:description v-if="modelParts.safety">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.safety.centralLock}}</p>
-                                    <p>{{modelParts.safety.driverSeatAirbag}}</p>
-                                    <p>{{modelParts.safety.engineAntiTheft}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.safety.centralLock}}</p>
+                                            <p>{{modelParts.safety.driverSeatAirbag}}</p>
+                                            <p>{{modelParts.safety.engineAntiTheft}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['safety'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.safety, 'safety')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                         <el-step title="发动机">
                             <template v-slot:description v-if="modelParts.engine">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.engine.intakeForm}}</p>
-                                    <p>{{modelParts.engine.fuelForm}}</p>
-                                    <p>{{modelParts.engine.fuelSupply}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.engine.intakeForm}}</p>
+                                            <p>{{modelParts.engine.fuelForm}}</p>
+                                            <p>{{modelParts.engine.fuelSupply}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['engine'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.engine, 'engine')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                         <el-step title="车轮/制动">
                             <template v-slot:description v-if="modelParts.wheel">
-                                <el-card shadow="never" :body-style="cardStyle">
-                                    <p>{{modelParts.wheel.frontBrakeType}}</p>
-                                    <p>{{modelParts.wheel.frontTiresStandard}}</p>
-                                    <p>{{modelParts.wheel.parkBrakeType}}</p>
-                                </el-card>
+                                <el-popover
+                                    placement="right-start"
+                                    :width="200"
+                                    trigger="hover">
+                                    <template #reference>
+                                        <el-card shadow="never" :body-style="cardStyle">
+                                            <p>{{modelParts.wheel.frontBrakeType}}</p>
+                                            <p>{{modelParts.wheel.frontTiresStandard}}</p>
+                                            <p>{{modelParts.wheel.parkBrakeType}}</p>
+                                        </el-card>
+                                    </template>
+                                    <ul class="part-list">
+                                        <li 
+                                            class="param-item" 
+                                            v-for="key in Object.keys(partsKeyToText['wheel'])" 
+                                            :key="key">{{keyAndValueCard(key, modelParts.wheel, 'wheel')}}</li>
+                                    </ul>
+                                </el-popover>
                             </template>
                         </el-step>
                     </el-steps>
@@ -84,14 +175,27 @@
                 <template v-if="activeSteps < 7">
                     <ul class="param-list" v-if="partsList.length" v-loading="loadingParam">
                         <li v-for="item in partsList" :key="item.id" class="param-item">
-                            <el-card 
-                                :shadow="modelParts[currPartKey] && item.id === modelParts[currPartKey].id ? 'always' : 'hover'" 
-                                @click="selectPart(item)">
-                                <p 
-                                    class="card-text" 
-                                    v-for="key in partsDisplay[currPartKey]" 
-                                    :key="key">{{keyAndValue(key, item)}}</p>
-                            </el-card>
+                            <el-popover
+                                placement="left"
+                                :width="200"
+                                trigger="hover">
+                                <template #reference>
+                                    <el-card 
+                                        :shadow="modelParts[currPartKey] && item.id === modelParts[currPartKey].id ? 'always' : 'hover'" 
+                                        @click="selectPart(item)">
+                                        <p 
+                                            class="card-text" 
+                                            v-for="key in partsDisplay[currPartKey]" 
+                                            :key="key">{{keyAndValue(key, item)}}</p>
+                                    </el-card>
+                                </template>
+                                <ul class="part-list">
+                                    <li 
+                                        class="param-item" 
+                                        v-for="key in Object.keys(partsKeyToText[currPartKey])" 
+                                        :key="key">{{keyAndValue(key, item)}}</li>
+                                </ul>
+                            </el-popover>
                         </li>
                     </ul>
                     <el-pagination layout="total, prev, next" :total="50"></el-pagination>
@@ -103,12 +207,12 @@
             </el-aside>
             
             <el-dialog title="保存车型" v-model="dialogFormVisible" :destroy-on-close="destroyDialog">
-                <el-form :model="carForm" class="car-form">
-                    <el-form-item label="车型名称" :label-width="formLabelWidth">
-                        <el-input v-model="carForm.modelName" placeholder="请填写车型名称" autocomplete="off"></el-input>
+                <el-form :model="carForm" class="car-form" ref="carForm" :rules="carRules" >
+                    <el-form-item label="车型名称" :label-width="formLabelWidth" prop="modelName">
+                        <el-input v-model="carForm.modelName" name="modelName" placeholder="请填写车型名称" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="年代款" :label-width="formLabelWidth">
-                        <el-input v-model="carForm.period" placeholder="请填写车型名称" autocomplete="off"></el-input>
+                    <el-form-item label="年代款" :label-width="formLabelWidth" prop="period">
+                        <el-input v-model="carForm.period" name="period" placeholder="请填写车型名称" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-form>
                 <template #footer>
@@ -146,6 +250,7 @@ export default {
     },
     data() {
         return {
+            partsKeyToText,
             partsDisplay,
             activeSteps: 0,
             cardStyle: {
@@ -171,7 +276,19 @@ export default {
                 period: ''
             },
             destroyDialog: false,
-            loadingParam: false
+            loadingParam: false,
+            carRules: {
+                modelName: [{
+                    required: true,
+                    message: '请填写车型名称',
+                    trigger: 'change'
+                }],
+                period: [{
+                    required: true,
+                    trigger: 'change',
+                    message: '请填写年代款式'
+                }]
+            }
         };
     },
     computed: {
@@ -234,6 +351,9 @@ export default {
         keyAndValue(key, obj) {
             return partsKeyToText[this.currPartKey][key] + '：' + obj[key];
         },
+        keyAndValueCard(key, obj, partName) {
+            return partsKeyToText[partName][key] + '：' + obj[key];
+        },
         selectPart(item) {
             this.modelParts[this.currPartKey] = item;
         },
@@ -258,15 +378,22 @@ export default {
 
             Object.assign(param, this.carForm);
 
-            saveCustomInfo(param).then(res=> {
-                if (res.code === CODE_OK) {
-                    this.$message({
-                        message: '保存成功',
-                        type: 'success'
+            this.$refs.carForm.validate(valid=> {
+                if (valid) {
+                    saveCustomInfo(param).then(res=> {
+                        if (res.code === CODE_OK) {
+                            this.$message({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                            this.destroyDialog = true;
+                            this.dialogFormVisible = false;
+                            this.$router.back();
+                        }
                     });
-                    this.destroyDialog = true;
-                    this.dialogFormVisible = false;
-                    this.$router.back();
+                } else {
+                    console.log('error submit!!');
+                    return false;
                 }
             });
         }

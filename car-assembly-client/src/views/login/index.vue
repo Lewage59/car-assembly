@@ -2,7 +2,7 @@
     <div class="login-container">
         <div class="inner-wrapper">
             <div class="title-container" @click="toLink">
-                <img src="@/assets/logo/nav-logo.jpg" class="logo-image">
+                <img src="@/assets/logo/logo.png" class="logo-image">
                 <h3 class="title">汽车组装演示系统</h3>
             </div>
             <el-form
@@ -242,7 +242,8 @@ export default {
 
         .logo-image {
             display: inline-block;
-            height: 50px;
+            height: 36px;
+            margin: 6px 8px;
         }
 
         .title {
