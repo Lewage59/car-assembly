@@ -1,4 +1,5 @@
 # car-assembly 
+> 本项目仅供学习和参考！！！
 
 ## 一、系统环境部署
 1. 服务器：由于基于Node.js v10.15.3进行开发，因此需要安装和配置相关的Node环境。具体安装步骤和部署详情：http://nodejs.cn/learn/how-to-install-nodejs。
