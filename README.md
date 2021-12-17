@@ -37,3 +37,6 @@
     ```
     nest start admin -w
     ```
+
+## LICENSE
+[MIT License](./LICENSE)
